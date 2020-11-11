@@ -111,25 +111,21 @@ def groupVenuesBy(*argv):
 
   for vals in grouped_venues:
     keyvalues = {}
-    for arg, val in zip(arguments, vals):
+    for arg, val in zip(argv, vals):
       keyvalues[arg] = val
     ret.append(keyvalues)
   
-  ret_withVenues = []
+  ret_withVenues = []  
+
   for r in ret:
-    selectedvenues = Venue.query.filter(Venue.state==r['state'], Venue.city==r['city']).all()
+    filterings = [(attr==r[arg]) for attr, arg in zip(listOfAttributes, argv)]
+    selectedvenues = Venue.query.filter(*filterings).all()
     ret_withVenues.append({**r, **{'venues': selectedvenues}})
 
+  return ret_withVenues
+
 def groupVenuesByCityAndState():
-  grouped_venues = db.session.query(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
-  ret = []
-  for city, state in grouped_venues:
-    ret.append({'city': city, 'state': state})
-  
-  ret_withVenues = []
-  for r in ret:
-    selectedvenues = Venue.query.filter(Venue.state==r['state'], Venue.city==r['city']).all()
-    ret_withVenues.append({**r, **{'venues': selectedvenues}})
+  return groupVenuesBy('city', 'state')
 
 @app.route('/venues')
 def venues():
