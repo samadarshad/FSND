@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------#
 
 import json
+from operator import mul
 import dateutil.parser
 import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
@@ -101,6 +102,25 @@ def index():
 #  Venues
 #  ----------------------------------------------------------------
 def groupVenuesBy(*argv):
+  listOfAttributes = []
+  for arg in argv:
+    listOfAttributes.append(getattr(Venue, arg))
+  grouped_venues = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
+
+  ret = []
+
+  for vals in grouped_venues:
+    keyvalues = {}
+    for arg, val in zip(arguments, vals):
+      keyvalues[arg] = val
+    ret.append(keyvalues)
+  
+  ret_withVenues = []
+  for r in ret:
+    selectedvenues = Venue.query.filter(Venue.state==r['state'], Venue.city==r['city']).all()
+    ret_withVenues.append({**r, **{'venues': selectedvenues}})
+
+def groupVenuesByCityAndState():
   grouped_venues = db.session.query(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
   ret = []
   for city, state in grouped_venues:
@@ -110,7 +130,6 @@ def groupVenuesBy(*argv):
   for r in ret:
     selectedvenues = Venue.query.filter(Venue.state==r['state'], Venue.city==r['city']).all()
     ret_withVenues.append({**r, **{'venues': selectedvenues}})
-
 
 @app.route('/venues')
 def venues():
