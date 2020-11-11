@@ -100,11 +100,28 @@ def index():
 
 #  Venues
 #  ----------------------------------------------------------------
+def groupVenuesBy(*argv):
+  grouped_venues = db.session.query(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
+  ret = []
+  for city, state in grouped_venues:
+    ret.append({'city': city, 'state': state})
+  
+  ret_withVenues = []
+  for r in ret:
+    selectedvenues = Venue.query.filter(Venue.state==r['state'], Venue.city==r['city']).all()
+    ret_withVenues.append({**r, **{'venues': selectedvenues}})
+
 
 @app.route('/venues')
 def venues():
   # TODO: replace with real venues data.
-  #       num_shows should be aggregated based on number of upcoming shows per venue.
+  #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
+  areas = db.session.query(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
+
+  
+  for area in areas:
+    area.venues = Venue.query.filter(Venue.state==area.state, Venue.city==area.city).all()
+  print(areas)
   data=[{
     "city": "San Francisco",
     "state": "CA",
