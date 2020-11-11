@@ -97,7 +97,10 @@ Instructions
 3. Fill out every `TODO` section throughout the codebase. We suggest going in order of the following:
 
   1. Connect to a database in `config.py`. A project submission that uses a local database connection is fine.
+  DONE
   2. Using SQLAlchemy, set up normalized models for the objects we support in our web app in the Models section of `app.py`. Check out the sample pages provided at /artists/1, /venues/1, and /shows/1 for examples of the data we want to model, using all of the learned best practices in database schema design. Implement missing model properties and relationships using database migrations via Flask-Migrate.
+  DONE
+
   3. Implement form submissions for creating new Venues, Artists, and Shows. There should be proper constraints, powering the `/create` endpoints that serve the create form templates, to avoid duplicate or nonsensical form submissions. Submitting a form should create proper new records in the database.
   4. Implement the controllers for listing venues, artists, and shows. Note the structure of the mock data used. We want to keep the structure of the mock data.
   5. Implement search, powering the `/search` endpoints that serve the application's search functionalities.
@@ -156,7 +159,8 @@ git push -u origin master
 
 3. **Initialize and activate a virtualenv using:**
 ```
-python -m virtualenv env
+python -m virtualenv env 
+### I had to 1. enable symlinks, and 2. run vbox as admin: https://serverfault.com/questions/345341/cant-create-symlinks-in-virtualbox-shared-folders
 source env/bin/activate
 ```
 >**Note** - In Windows, the `env` does not have a `bin` directory. Therefore, you'd use the analogous command shown below:
@@ -174,6 +178,13 @@ pip install -r requirements.txt
 export FLASK_APP=myapp
 export FLASK_ENV=development # enables debug mode
 python3 app.py
+
+##### I did: 
+source env/bin/activate
+export FLASK_APP=app.py 
+export FLASK_ENV=development 
+flask run --port 5002
+then open: http://127.0.0.1:5002/
 ```
 
 6. **Verify on the Browser**<br>
