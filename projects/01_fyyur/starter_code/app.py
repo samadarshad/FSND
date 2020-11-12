@@ -14,6 +14,8 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql.sqltypes import DateTime
+from sqlalchemy.sql.expression import cast
 from forms import *
 #----------------------------------------------------------------------------#
 # App Config.
@@ -74,22 +76,26 @@ class Show(db.Model):
   start_time = db.Column(db.String, nullable=False)
   artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+  
+  @hybrid_property
+  def datetime(self):
+    return dateutil.parser.parse(self.start_time)
+
+  @datetime.expression
+  def datetime(cls):
+    return cast(cls.start_time, DateTime)
 
   @hybrid_property
-  def isDateInFuture(self):
-    print(self.start_time)
-    date = dateutil.parser.parse(self.start_time)
-    print(date)
+  def isUpcoming(self):
+    date = self.datetime
     now = datetime.now(date.tzinfo)
-    print(now)
-    print( date > now)
     return (date > now)
 
-  @hybrid_property
-  def test(self):
-    return True
-  # instead of artist_id, have the actual artist be referenced here, so you can do show.artist.id instead of show.artist_id
-
+  @isUpcoming.expression
+  def isUpcoming(cls):
+    date = cls.datetime
+    now = datetime.now()
+    return (date > now)
 
 #----------------------------------------------------------------------------#
 # Filters.
