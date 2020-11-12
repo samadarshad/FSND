@@ -101,63 +101,36 @@ def index():
 
 #  Venues
 #  ----------------------------------------------------------------
-def groupVenuesBy(*argv):
+# e.g. groupClassBy(Venue, 'venues', 'city', 'state')
+def groupClassBy(dbClass, dbClassDictKeyName, *argv):
   listOfAttributes = []
   for arg in argv:
-    listOfAttributes.append(getattr(Venue, arg))
-  grouped_venues = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
+    listOfAttributes.append(getattr(dbClass, arg))
+  groupedClass = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
 
-  ret = []
+  groupedClassDict = []
 
-  for vals in grouped_venues:
+  for vals in groupedClass:
     keyvalues = {}
     for arg, val in zip(argv, vals):
       keyvalues[arg] = val
-    ret.append(keyvalues)
+    groupedClassDict.append(keyvalues)
   
-  ret_withVenues = []  
+  groupedClassDict_withClass = []  
 
-  for r in ret:
+  for r in groupedClassDict:
     filterings = [(attr==r[arg]) for attr, arg in zip(listOfAttributes, argv)]
-    selectedvenues = Venue.query.filter(*filterings).all()
-    ret_withVenues.append({**r, **{'venues': selectedvenues}})
+    selectedvenues = dbClass.query.filter(*filterings).all()
+    groupedClassDict_withClass.append({**r, **{dbClassDictKeyName: selectedvenues}})
 
-  return ret_withVenues
+  return groupedClassDict_withClass
 
 def groupVenuesByCityAndState():
-  return groupVenuesBy('city', 'state')
+  return groupClassBy(Venue, 'venues', 'city', 'state')
 
 @app.route('/venues')
 def venues():
-  # TODO: replace with real venues data.
-  #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-  areas = db.session.query(Venue.city, Venue.state).group_by(Venue.city, Venue.state).all()
-
-  
-  for area in areas:
-    area.venues = Venue.query.filter(Venue.state==area.state, Venue.city==area.city).all()
-  print(areas)
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
+  data = groupVenuesByCityAndState()
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
