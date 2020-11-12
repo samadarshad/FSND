@@ -13,6 +13,7 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+from sqlalchemy.ext.hybrid import hybrid_property
 from forms import *
 #----------------------------------------------------------------------------#
 # App Config.
@@ -73,6 +74,20 @@ class Show(db.Model):
   start_time = db.Column(db.String, nullable=False)
   artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+
+  @hybrid_property
+  def isDateInFuture(self):
+    print(self.start_time)
+    date = dateutil.parser.parse(self.start_time)
+    print(date)
+    now = datetime.now(date.tzinfo)
+    print(now)
+    print( date > now)
+    return (date > now)
+
+  @hybrid_property
+  def test(self):
+    return True
   # instead of artist_id, have the actual artist be referenced here, so you can do show.artist.id instead of show.artist_id
 
 
@@ -90,7 +105,7 @@ def format_datetime(value, format='medium'):
 
 app.jinja_env.filters['datetime'] = format_datetime
 
-def isDateInFuture(dateStr: str):
+def isDateInFuture2(dateStr: str):
   date = dateutil.parser.parse(dateStr)
   now = datetime.now(date.tzinfo)
   return date > now
