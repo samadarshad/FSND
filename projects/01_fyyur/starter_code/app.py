@@ -385,11 +385,11 @@ def show_artist(artist_id):
     "past_shows_count": 0,
     "upcoming_shows_count": 3,
   }
-  now = datetime.today()
-  upcoming_shows=[] #artist.shows.query.filter_by(start_time > now).all() # need a way to compare start_time string
-  past_shows=[]
+  artist = Artist.query.get(artist_id)
+  upcoming_shows= artist.shows.filter(Show.isUpcoming).all()
+  past_shows= artist.shows.filter(Show.isUpcoming == False).all()
   data = list(filter(lambda d: d['id'] == artist_id, [data1, data2, data3]))[0]
-  return render_template('pages/show_artist.html', artist=data, 
+  return render_template('pages/show_artist.html', artist=artist, 
     upcoming_shows=upcoming_shows,
     past_shows=past_shows)
 
