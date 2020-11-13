@@ -192,16 +192,16 @@ def populateClassObject(className, request):
   attributes = inspect.getmembers(className, lambda a:not(inspect.isroutine(a)))
   attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
   for a in attributes:
-    if a == 'genres':
-      setattr(obj, a, request.form.getlist(a))
-    elif a in request.form:
-      setattr(obj, a, request.form[a])
+    if a in request.form:
+      if isinstance(getattr(className, a).type, db.ARRAY):
+        setattr(obj, a, request.form.getlist(a))
+      else:
+        setattr(obj, a, request.form[a])
   return obj
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   try:
-    venue = Venue()
     venue = populateClassObject(Venue, request)
     db.session.add(venue)
     db.session.commit()
