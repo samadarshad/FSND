@@ -73,7 +73,7 @@ class Artist(db.Model):
 class Show(db.Model):
   __tablename__ = 'Show'
   id = db.Column(db.Integer, primary_key=True)
-  start_time = db.Column(db.String, nullable=False)
+  start_time = db.Column(db.DateTime, nullable=False)
   artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
   
@@ -320,7 +320,6 @@ def create_artist_submission():
 
 @app.route('/shows')
 def shows():
-  # displays list of shows at /shows
   data=Show.query.all() 
   return render_template('pages/shows.html', shows=data)
 
