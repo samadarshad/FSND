@@ -78,24 +78,14 @@ class Show(db.Model):
   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
   
   @hybrid_property
-  def datetime(self):
-    return dateutil.parser.parse(self.start_time)
-
-  @datetime.expression
-  def datetime(cls):
-    return cast(cls.start_time, DateTime)
-
-  @hybrid_property
   def isUpcoming(self):
-    date = self.datetime
-    now = datetime.now(date.tzinfo)
-    return (date > now)
+    now = datetime.now(self.start_time.tzinfo)
+    return (self.start_time > now)
 
   @isUpcoming.expression
   def isUpcoming(cls):
-    date = cls.datetime
     now = datetime.now()
-    return (date > now)
+    return (cls.start_time > now)
 
   
 
