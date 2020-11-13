@@ -17,6 +17,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.sqltypes import DateTime
 from sqlalchemy.sql.expression import cast
 from forms import *
+import inspect
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -186,13 +187,33 @@ def create_venue_form():
   form = VenueForm()
   return render_template('forms/new_venue.html', form=form)
 
+def populateClassObject(className, request):
+  obj = className()
+  attributes = inspect.getmembers(className, lambda a:not(inspect.isroutine(a)))
+  attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
+  for a in attributes:
+    if a == 'genres':
+      setattr(obj, a, request.form.getlist(a))
+    elif a in request.form:
+      setattr(obj, a, request.form[a])
+  return obj
+
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
+  try:
+    venue = Venue()
+    venue = populateClassObject(Venue, request)
+    db.session.add(venue)
+    db.session.commit()
+    flash('Venue ' + request.form['name'] + ' was successfully listed!')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
+  finally:
+    db.session.close()
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
 
-  # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
