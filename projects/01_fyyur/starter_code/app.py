@@ -103,13 +103,21 @@ class Show(db.Model):
 # Filters.
 #----------------------------------------------------------------------------#
 
-def format_datetime(value, format='medium'):
-  date = dateutil.parser.parse(value)
+def format_datetime(value, format='medium'):  
+  date = None
+  if type(value) is str:
+    date = dateutil.parser.parse(value)
+  elif type(value) is datetime:
+    date = value
+  else:
+    return "Error: invalid input to format_datetime"
+
   if format == 'full':
       format="EEEE MMMM, d, y 'at' h:mma"
   elif format == 'medium':
       format="EE MM, dd, y h:mma"
   return babel.dates.format_datetime(date, format)
+
 
 app.jinja_env.filters['datetime'] = format_datetime
 
