@@ -50,8 +50,6 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String, nullable=True)
     shows = db.relationship('Show', backref='venue', lazy='dynamic')
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
 class Artist(db.Model):
     __tablename__ = 'Artist'
 
@@ -68,9 +66,6 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String, nullable=True)
     shows = db.relationship('Show', backref='artist', lazy='dynamic')
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 class Show(db.Model):
   __tablename__ = 'Show'
   id = db.Column(db.Integer, primary_key=True)
@@ -87,8 +82,6 @@ class Show(db.Model):
   def isUpcoming(cls):
     now = datetime.now()
     return (cls.start_time > now)
-
-  
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -255,9 +248,34 @@ def show_artist(artist_id):
 
 #  Update
 #  ----------------------------------------------------------------
+def setFormDefaultValues(form, obj):
+  attributes = inspect.getmembers(form, lambda a:not(inspect.isroutine(a)))
+  attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
+  for a in attributes:
+    if a in obj:
+      # print(getattr(obj, a))
+      # print(obj[a])
+      if isinstance(getattr(form, a), SelectMultipleField) or isinstance(getattr(form, a), SelectField):
+        print("isinstance!", a)
+        # print(getattr(obj, a))
+        # setattr(form, a + '.default', getattr(obj, a))
+        setattr(getattr(form, a), "default", obj[a])
+  form.process()
+  # for attr in form, if attr == SelectField or SelectMultipleField, then form.attr.default = obj.attr
+
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
   form = ArtistForm()
+  # print(isinstance(form.genres, SelectMultipleField))
+  # attributes = inspect.getmembers(ArtistForm, lambda a:not(inspect.isroutine(a)))
+  # attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
+  
+  # print(attributes)
+  # form.genres.default = ["Rock n Roll"]
+  # form.state.default = "CA"
+  # form.process()
+  # setattr(getattr(form, "state"), "default", "CA")
+  # form.process()
   artist={
     "id": 4,
     "name": "Guns N Petals",
@@ -271,6 +289,7 @@ def edit_artist(artist_id):
     "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
     "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
   }
+  setFormDefaultValues(form, artist)
   # TODO: populate form with fields from artist with ID <artist_id>
   return render_template('forms/edit_artist.html', form=form, artist=artist)
 
