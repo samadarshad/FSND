@@ -75,10 +75,10 @@
 	</div>
 </section>
 
-<button class = "delete-button" data-id="{{ venue.id }}" >Delete</button>
+<button class = "btn btn-danger btn-lg" id="delete-button" data-id="{{ venue.id }}" >Delete</button>
 
 <script type="text/javascript">
-	const btn = document.querySelector('.delete-button');	
+	const btn = document.getElementById('delete-button');	
   	btn.onclick = function(e) {	
 	   const venueId = e.target.dataset['id'];	
 	   fetch('/venues/' + venueId, {	
