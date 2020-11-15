@@ -2,10 +2,6 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-import json
-from operator import mul
-import dateutil.parser
-import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 from flask_moment import Moment
 from flask_migrate import Migrate
@@ -13,14 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.sql.sqltypes import DateTime
-from sqlalchemy.sql.expression import cast
 from forms import *
-import inspect
 from models import *
 from util import *
-from venue import venue_api
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -30,7 +22,7 @@ moment = Moment(app)
 app.config.from_object('config')
 db.init_app(app)
 db.app = app
-
+from venue import venue_api
 app.register_blueprint(venue_api, url_prefix='/venues')
 migrate = Migrate(app, db, compare_type=True)
 
@@ -38,22 +30,6 @@ migrate = Migrate(app, db, compare_type=True)
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
-
-def format_datetime(value, format='medium'):  
-  date = None
-  if type(value) is str:
-    date = dateutil.parser.parse(value)
-  elif type(value) is datetime:
-    date = value
-  else:
-    return "Error: invalid input to format_datetime"
-
-  if format == 'full':
-      format="EEEE MMMM, d, y 'at' h:mma"
-  elif format == 'medium':
-      format="EE MM, dd, y h:mma"
-  return babel.dates.format_datetime(date, format)
-
 
 app.jinja_env.filters['datetime'] = format_datetime
 

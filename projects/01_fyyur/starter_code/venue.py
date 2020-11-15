@@ -1,12 +1,16 @@
 from flask import Blueprint, Flask, render_template, request, Response, flash, redirect, url_for
 from util import *
-from models import Venue, Show
+from models import Venue, Show, db
 from forms import VenueForm
 
 venue_api = Blueprint('venue_api', __name__)
 
+#----------------------------------------------------------------------------#
+# READ
+#----------------------------------------------------------------------------#
+
 def groupVenuesByCityAndState():
-  return groupClassBy(Venue, 'venues', 'city', 'state')
+  return groupClassBy(db, Venue, 'venues', 'city', 'state')
 
 @venue_api.route('/')
 def venues():
@@ -21,6 +25,10 @@ def show_venue(venue_id):
   return render_template('pages/show_venue.html', venue=venue,
     upcoming_shows=upcoming_shows,
     past_shows=past_shows)
+
+#----------------------------------------------------------------------------#
+# CREATE
+#----------------------------------------------------------------------------#
 
 @venue_api.route('/create', methods=['GET'])
 def create_venue_form():
@@ -57,15 +65,9 @@ def search_venues():
   }
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
-@venue_api.route('/<venue_id>', methods=['DELETE'])
-def delete_venue(venue_id):
-  # TODO: Complete this endpoint for taking a venue_id, and using
-  # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
-  # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-  # clicking that button delete it from the db then redirect the user to the homepage
-  return None
-
+#----------------------------------------------------------------------------#
+# UPDATE
+#----------------------------------------------------------------------------#
 
 @venue_api.route('/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
@@ -87,3 +89,17 @@ def edit_venue_submission(venue_id):
   finally:
     db.session.close()
   return redirect(url_for('venue_api.show_venue', venue_id=venue_id))
+
+#----------------------------------------------------------------------------#
+# DELETE
+#----------------------------------------------------------------------------#
+
+@venue_api.route('/<venue_id>', methods=['DELETE'])
+def delete_venue(venue_id):
+  # TODO: Complete this endpoint for taking a venue_id, and using
+  # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+
+  # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
+  # clicking that button delete it from the db then redirect the user to the homepage
+  return None
+
