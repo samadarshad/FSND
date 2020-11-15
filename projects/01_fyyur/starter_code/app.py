@@ -23,7 +23,9 @@ app.config.from_object('config')
 db.init_app(app)
 db.app = app
 from venue import venue_api
+from artist import artist_api
 app.register_blueprint(venue_api, url_prefix='/venues')
+app.register_blueprint(artist_api, url_prefix='/artists')
 migrate = Migrate(app, db, compare_type=True)
 
 
@@ -40,87 +42,6 @@ app.jinja_env.filters['datetime'] = format_datetime
 @app.route('/')
 def index():
   return render_template('pages/home.html')
-
-#  Artists
-#  ----------------------------------------------------------------
-@app.route('/artists')
-def artists():
-  data = Artist.query.all()
-  return render_template('pages/artists.html', artists=data)
-
-@app.route('/artists/search', methods=['POST'])
-def search_artists():
-  # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-  # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
-  # search for "band" should return "The Wild Sax Band".
-  response={
-    "count": 1,
-    "data": [{
-      "id": 4,
-      "name": "Guns N Petals",
-      "num_upcoming_shows": 0,
-    }]
-  }
-  return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
-
-@app.route('/artists/<int:artist_id>')
-def show_artist(artist_id):
-  artist = Artist.query.get(artist_id)
-  upcoming_shows= artist.shows.filter(Show.isUpcoming).all()
-  past_shows= artist.shows.filter(Show.isUpcoming == False).all()
-  return render_template('pages/show_artist.html', artist=artist, 
-    upcoming_shows=upcoming_shows,
-    past_shows=past_shows)
-
-#  Update
-#  ----------------------------------------------------------------
-
-
-@app.route('/artists/<int:artist_id>/edit', methods=['GET'])
-def edit_artist(artist_id):
-  form = ArtistForm() 
-  artist = Artist.query.get(artist_id) 
-  setFormDefaultValues(form, artist)
-  return render_template('forms/edit_artist.html', form=form, artist=artist)
-
-@app.route('/artists/<int:artist_id>/edit', methods=['POST'])
-def edit_artist_submission(artist_id):
-  try:
-    artist = Artist.query.get(artist_id)
-    artist = populateObjectFromRequest(artist, request)
-    db.session.commit()
-    flash('Artist ' + request.form['name'] + ' was successfully edited!')
-  except:
-    db.session.rollback()
-    flash('An error occurred. Artist ' + request.form['name'] + ' could not be edited.')
-  finally:
-    db.session.close()
-  return redirect(url_for('show_artist', artist_id=artist_id))
-
-
-#  Create Artist
-#  ----------------------------------------------------------------
-
-@app.route('/artists/create', methods=['GET'])
-def create_artist_form():
-  form = ArtistForm()
-  return render_template('forms/new_artist.html', form=form)
-
-@app.route('/artists/create', methods=['POST'])
-def create_artist_submission():
-  try:
-    artist = Artist()
-    artist = populateObjectFromRequest(artist, request)
-    db.session.add(artist)
-    db.session.commit()
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  except:
-    db.session.rollback()
-    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
-  finally:
-    db.session.close()
-  return render_template('pages/home.html')
-
 
 #  Shows
 #  ----------------------------------------------------------------
