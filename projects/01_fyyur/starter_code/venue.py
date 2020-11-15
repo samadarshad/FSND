@@ -53,7 +53,7 @@ def create_venue_submission():
 
 @venue_api.route('/search', methods=['POST'])
 def search_venues():
-  response = Venue.query.filter(Venue.name.like('%' + request.form.get('search_term') + '%')).all()
+  response = Venue.query.filter(Venue.name.ilike('%' + request.form.get('search_term') + '%')).all()
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 #----------------------------------------------------------------------------#
