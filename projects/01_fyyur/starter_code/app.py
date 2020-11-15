@@ -18,6 +18,9 @@ from sqlalchemy.sql.sqltypes import DateTime
 from sqlalchemy.sql.expression import cast
 from forms import *
 import inspect
+from models import *
+from util import *
+from venue import venue_api
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -25,63 +28,66 @@ import inspect
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
-db = SQLAlchemy(app)
-
+db.init_app(app)
+db.app = app
+# db = SQLAlchemy(app)
+# from venue import db, venue_api
+app.register_blueprint(venue_api, url_prefix='/venuetest')
 migrate = Migrate(app, db, compare_type=True)
 
-#----------------------------------------------------------------------------#
-# Models.
-#----------------------------------------------------------------------------#
+# #----------------------------------------------------------------------------#
+# # Models.
+# #----------------------------------------------------------------------------#
 
-class Venue(db.Model):
-    __tablename__ = 'Venue'
+# class Venue(db.Model):
+#     __tablename__ = 'Venue'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    website = db.Column(db.String())
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String(120)))
-    seeking_talent = db.Column(db.Boolean, default=False)
-    seeking_description = db.Column(db.String, nullable=True)
-    shows = db.relationship('Show', backref='venue', lazy='dynamic')
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String)
+#     city = db.Column(db.String(120))
+#     state = db.Column(db.String(120))
+#     address = db.Column(db.String(120))
+#     phone = db.Column(db.String(120))
+#     website = db.Column(db.String())
+#     image_link = db.Column(db.String(500))
+#     facebook_link = db.Column(db.String(120))
+#     genres = db.Column(db.ARRAY(db.String(120)))
+#     seeking_talent = db.Column(db.Boolean, default=False)
+#     seeking_description = db.Column(db.String, nullable=True)
+#     shows = db.relationship('Show', backref='venue', lazy='dynamic')
 
-class Artist(db.Model):
-    __tablename__ = 'Artist'
+# class Artist(db.Model):
+#     __tablename__ = 'Artist'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    website = db.Column(db.String())
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String(120)))
-    seeking_venue = db.Column(db.Boolean, default=False)
-    seeking_description = db.Column(db.String, nullable=True)
-    shows = db.relationship('Show', backref='artist', lazy='dynamic')
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String)
+#     city = db.Column(db.String(120))
+#     state = db.Column(db.String(120))
+#     phone = db.Column(db.String(120))
+#     website = db.Column(db.String())
+#     image_link = db.Column(db.String(500))
+#     facebook_link = db.Column(db.String(120))
+#     genres = db.Column(db.ARRAY(db.String(120)))
+#     seeking_venue = db.Column(db.Boolean, default=False)
+#     seeking_description = db.Column(db.String, nullable=True)
+#     shows = db.relationship('Show', backref='artist', lazy='dynamic')
 
-class Show(db.Model):
-  __tablename__ = 'Show'
-  id = db.Column(db.Integer, primary_key=True)
-  start_time = db.Column(db.DateTime, nullable=False)
-  artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-  venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+# class Show(db.Model):
+#   __tablename__ = 'Show'
+#   id = db.Column(db.Integer, primary_key=True)
+#   start_time = db.Column(db.DateTime, nullable=False)
+#   artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+#   venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
   
-  @hybrid_property
-  def isUpcoming(self):
-    now = datetime.now(self.start_time.tzinfo)
-    return (self.start_time > now)
+#   @hybrid_property
+#   def isUpcoming(self):
+#     now = datetime.now(self.start_time.tzinfo)
+#     return (self.start_time > now)
 
-  @isUpcoming.expression
-  def isUpcoming(cls):
-    now = datetime.now()
-    return (cls.start_time > now)
+#   @isUpcoming.expression
+#   def isUpcoming(cls):
+#     now = datetime.now()
+#     return (cls.start_time > now)
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -114,31 +120,8 @@ def index():
   return render_template('pages/home.html')
 
 
-#  Venues
-#  ----------------------------------------------------------------
-# e.g. groupClassBy(Venue, 'venues', 'city', 'state')
-def groupClassBy(dbClass, dbClassDictKeyName, *argv):
-  listOfAttributes = []
-  for arg in argv:
-    listOfAttributes.append(getattr(dbClass, arg))
-  groupedClass = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
-
-  groupedClassDict = []
-
-  for vals in groupedClass:
-    keyvalues = {}
-    for arg, val in zip(argv, vals):
-      keyvalues[arg] = val
-    groupedClassDict.append(keyvalues)
-  
-  groupedClassDict_withClass = []  
-
-  for r in groupedClassDict:
-    filterings = [(attr==r[arg]) for attr, arg in zip(listOfAttributes, argv)]
-    selectedvenues = dbClass.query.filter(*filterings).all()
-    groupedClassDict_withClass.append({**r, **{dbClassDictKeyName: selectedvenues}})
-
-  return groupedClassDict_withClass
+# #  Venues
+# #  ----------------------------------------------------------------
 
 def groupVenuesByCityAndState():
   return groupClassBy(Venue, 'venues', 'city', 'state')
