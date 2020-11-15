@@ -53,17 +53,7 @@ def create_venue_submission():
 
 @venue_api.route('/search', methods=['POST'])
 def search_venues():
-  # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-  # seach for Hop should return "The Musical Hop".
-  # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-  response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }
+  response = Venue.query.filter(Venue.name.like('%' + request.form.get('search_term') + '%')).all()
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 #----------------------------------------------------------------------------#
@@ -118,10 +108,4 @@ def delete_venue(venue_id):
   if not error:
     flash('Venue ' + venue.name + ' was successfully deleted!')
     return redirect(url_for('index'))
-  # TODO: Complete this endpoint for taking a venue_id, and using
-  # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
-  # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-  # clicking that button delete it from the db then redirect the user to the homepage
-  # return None
 
