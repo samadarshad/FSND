@@ -84,9 +84,6 @@ def edit_venue_submission(venue_id):
 #----------------------------------------------------------------------------#
 # DELETE
 #----------------------------------------------------------------------------#
-@venue_api.route('/home')
-def home_test():  
-  return redirect(url_for('index'))
 
 @venue_api.route('/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):  
@@ -104,8 +101,7 @@ def delete_venue(venue_id):
     db.session.close()
   if error:
     flash('An error occurred. Venue ' + venue.name + ' could not be deleted.')
-    # abort(400)
   if not error:
     flash('Venue ' + venue.name + ' was successfully deleted!')
-    return redirect(url_for('index'))
+  return redirect(url_for('index'))
 

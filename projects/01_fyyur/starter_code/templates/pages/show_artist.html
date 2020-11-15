@@ -71,6 +71,23 @@
 		{% endfor %}
 	</div>
 </section>
+<section>
+	<a href="/artists/{{ artist.id }}/edit"><button class = "btn btn-primary btn-lg" id="edit-button">Edit</button></a>
+	<button class = "btn btn-danger btn-lg" id="delete-button" >Delete</button>
+</section>
+
+
+<script type="text/javascript">
+	const btn = document.getElementById('delete-button');	
+  	btn.onclick = function(e) {
+	   fetch('/artists/{{ artist.id }}', {	
+	    	method: 'DELETE'	
+	   	})
+		.then(function() {
+			window.location = "/";
+		})	
+ 	}	
+</script>
 
 {% endblock %}
 

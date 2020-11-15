@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from util import *
 from models import Artist, Show, db
 from forms import ArtistForm
+import sys
 
 artist_api = Blueprint('artist_api', __name__)
 
@@ -76,3 +77,29 @@ def edit_artist_submission(artist_id):
   finally:
     db.session.close()
   return redirect(url_for('show_artist', artist_id=artist_id))
+
+
+#----------------------------------------------------------------------------#
+# DELETE
+#----------------------------------------------------------------------------#
+
+@artist_api.route('/<artist_id>', methods=['DELETE'])
+def delete_artist(artist_id):
+  print("deleting artist")
+  error = False
+  artist = None
+  try:
+    artist = Artist.query.get(artist_id)
+    db.session.delete(artist)
+    db.session.commit()
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('An error occurred. Artist ' + artist.name + ' could not be deleted.')
+  if not error:
+    flash('Artist ' + artist.name + ' was successfully deleted!')
+  return redirect(url_for('index'))
