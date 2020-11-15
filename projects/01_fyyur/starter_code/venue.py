@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from util import *
 from models import Venue, Show, db
 from forms import VenueForm
