@@ -5,6 +5,9 @@ from forms import ArtistForm
 
 artist_api = Blueprint('artist_api', __name__)
 
+#----------------------------------------------------------------------------#
+# READ
+#----------------------------------------------------------------------------#
 
 @artist_api.route('/')
 def artists():
@@ -35,9 +38,33 @@ def show_artist(artist_id):
     upcoming_shows=upcoming_shows,
     past_shows=past_shows)
 
-#  Update
-#  ----------------------------------------------------------------
+#----------------------------------------------------------------------------#
+# CREATE
+#----------------------------------------------------------------------------#
 
+@artist_api.route('/create', methods=['GET'])
+def create_artist_form():
+  form = ArtistForm()
+  return render_template('forms/new_artist.html', form=form)
+
+@artist_api.route('/create', methods=['POST'])
+def create_artist_submission():
+  try:
+    artist = Artist()
+    artist = populateObjectFromRequest(artist, request)
+    db.session.add(artist)
+    db.session.commit()
+    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+  finally:
+    db.session.close()
+  return render_template('pages/home.html')
+
+#----------------------------------------------------------------------------#
+# UPDATE
+#----------------------------------------------------------------------------#
 
 @artist_api.route('/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
@@ -59,27 +86,3 @@ def edit_artist_submission(artist_id):
   finally:
     db.session.close()
   return redirect(url_for('show_artist', artist_id=artist_id))
-
-
-#  Create Artist
-#  ----------------------------------------------------------------
-
-@artist_api.route('/create', methods=['GET'])
-def create_artist_form():
-  form = ArtistForm()
-  return render_template('forms/new_artist.html', form=form)
-
-@artist_api.route('/create', methods=['POST'])
-def create_artist_submission():
-  try:
-    artist = Artist()
-    artist = populateObjectFromRequest(artist, request)
-    db.session.add(artist)
-    db.session.commit()
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  except:
-    db.session.rollback()
-    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
-  finally:
-    db.session.close()
-  return render_template('pages/home.html')

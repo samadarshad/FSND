@@ -24,10 +24,11 @@ db.init_app(app)
 db.app = app
 from venue import venue_api
 from artist import artist_api
+from show import show_api
 app.register_blueprint(venue_api, url_prefix='/venues')
 app.register_blueprint(artist_api, url_prefix='/artists')
+app.register_blueprint(show_api, url_prefix='/shows')
 migrate = Migrate(app, db, compare_type=True)
-
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -41,35 +42,6 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
-  return render_template('pages/home.html')
-
-#  Shows
-#  ----------------------------------------------------------------
-
-@app.route('/shows')
-def shows():
-  data=Show.query.all() 
-  return render_template('pages/shows.html', shows=data)
-
-@app.route('/shows/create')
-def create_shows():
-  # renders form. do not touch.
-  form = ShowForm()
-  return render_template('forms/new_show.html', form=form)
-
-@app.route('/shows/create', methods=['POST'])
-def create_show_submission():
-  try:
-    show = Show()
-    show = populateObjectFromRequest(show, request)
-    db.session.add(show)
-    db.session.commit()
-    flash('Show was successfully listed!')
-  except:
-    db.session.rollback()
-    flash('An error occurred. Show could not be listed.')
-  finally:
-    db.session.close()
   return render_template('pages/home.html')
 
 @app.errorhandler(404)
