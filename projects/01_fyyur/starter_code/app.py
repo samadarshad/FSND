@@ -192,10 +192,22 @@ def populateClassObject(className, request):
         setattr(obj, a, request.form[a])
   return obj
 
+def populateObjectFromRequest(obj, request):
+  attributes = inspect.getmembers(obj, lambda a:not(inspect.isroutine(a)))
+  attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
+  for a in attributes:
+    if a in request.form:
+      if isinstance(getattr(type(obj), a).type, db.ARRAY):
+        setattr(obj, a, request.form.getlist(a))
+      else:
+        setattr(obj, a, request.form[a])
+  return obj
+
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   try:
-    venue = populateClassObject(Venue, request)
+    venue = Venue()
+    venue = populateObjectFromRequest(venue, request)
     db.session.add(venue)
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully listed!')
@@ -265,9 +277,16 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-  # TODO: take values from the form submitted, and update existing
-  # artist record with ID <artist_id> using the new attributes
-
+  try:
+    artist = Artist.query.get(artist_id)
+    artist = populateObjectFromRequest(artist, request)
+    db.session.commit()
+    flash('Artist ' + request.form['name'] + ' was successfully edited!')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Artist ' + request.form['name'] + ' could not be edited.')
+  finally:
+    db.session.close()
   return redirect(url_for('show_artist', artist_id=artist_id))
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
@@ -307,7 +326,9 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   try:
-    artist = populateClassObject(Artist, request)
+    artist = Artist()
+    # artist = populateClassObject(Artist, request)
+    artist = populateObjectFromRequest(artist, request)
     db.session.add(artist)
     db.session.commit()
     flash('Artist ' + request.form['name'] + ' was successfully listed!')
@@ -336,7 +357,9 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   try:
-    show = populateClassObject(Show, request)
+    show = Show()
+    show = populateObjectFromRequest(show, request)
+    # show = populateClassObject(Show, request)
     db.session.add(show)
     db.session.commit()
     flash('Show was successfully listed!')
