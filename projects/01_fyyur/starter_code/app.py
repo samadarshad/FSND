@@ -32,7 +32,7 @@ db.init_app(app)
 db.app = app
 # db = SQLAlchemy(app)
 # from venue import db, venue_api
-app.register_blueprint(venue_api, url_prefix='/venuetest')
+app.register_blueprint(venue_api, url_prefix='/venues')
 migrate = Migrate(app, db, compare_type=True)
 
 # #----------------------------------------------------------------------------#
@@ -126,10 +126,12 @@ def index():
 def groupVenuesByCityAndState():
   return groupClassBy(Venue, 'venues', 'city', 'state')
 
-@app.route('/venues')
-def venues():
-  data = groupVenuesByCityAndState()
-  return render_template('pages/venues.html', areas=data);
+# @app.route('/venues')
+# def venues():
+#   return "venues()"
+# def venues():
+#   data = groupVenuesByCityAndState()
+#   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
@@ -146,14 +148,14 @@ def search_venues():
   }
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
-@app.route('/venues/<int:venue_id>')
-def show_venue(venue_id):
-  venue = Venue.query.get(venue_id)
-  upcoming_shows= venue.shows.filter(Show.isUpcoming).all()
-  past_shows= venue.shows.filter(Show.isUpcoming == False).all()
-  return render_template('pages/show_venue.html', venue=venue,
-    upcoming_shows=upcoming_shows,
-    past_shows=past_shows)
+# @app.route('/venues/<int:venue_id>')
+# def show_venue(venue_id):
+#   venue = Venue.query.get(venue_id)
+#   upcoming_shows= venue.shows.filter(Show.isUpcoming).all()
+#   past_shows= venue.shows.filter(Show.isUpcoming == False).all()
+#   return render_template('pages/show_venue.html', venue=venue,
+#     upcoming_shows=upcoming_shows,
+#     past_shows=past_shows)
 
 #  Create Venue
 #  ----------------------------------------------------------------
