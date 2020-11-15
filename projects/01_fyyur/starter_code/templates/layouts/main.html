@@ -53,9 +53,9 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li>
-              {% if (request.endpoint == 'venues') or
-                (request.endpoint == 'search_venues') or
-                (request.endpoint == 'show_venue') %}
+              {% if (request.endpoint == 'venue_api.venues') or
+                (request.endpoint == 'venue_api.search_venues') or
+                (request.endpoint == 'venue_api.show_venue') %}
               <form class="search" method="post" action="/venues/search">
                 <input class="form-control"
                   type="search"
@@ -64,9 +64,9 @@
                   aria-label="Search">
               </form>
               {% endif %}
-              {% if (request.endpoint == 'artists') or
-                (request.endpoint == 'search_artists') or
-                (request.endpoint == 'show_artist') %}
+              {% if (request.endpoint == 'artist_api.artists') or
+                (request.endpoint == 'artist_api.search_artists') or
+                (request.endpoint == 'artist_api.show_artist') %}
               <form class="search" method="post" action="/artists/search">
                 <input class="form-control"
                   type="search"
@@ -78,9 +78,9 @@
             </li>
           </ul>
           <ul class="nav navbar-nav">
-            <li {% if request.endpoint == 'venues' %} class="active" {% endif %}><a href="{{ url_for('venue_api.venues') }}">Venues</a></li>
-            <li {% if request.endpoint == 'artists' %} class="active" {% endif %}><a href="{{ url_for('artist_api.artists') }}">Artists</a></li>
-            <li {% if request.endpoint == 'shows' %} class="active" {% endif %}><a href="{{ url_for('show_api.shows') }}">Shows</a></li>
+            <li {% if request.endpoint == 'venue_api.venues' %} class="active" {% endif %}><a href="{{ url_for('venue_api.venues') }}">Venues</a></li>
+            <li {% if request.endpoint == 'artist_api.artists' %} class="active" {% endif %}><a href="{{ url_for('artist_api.artists') }}">Artists</a></li>
+            <li {% if request.endpoint == 'show_api.shows' %} class="active" {% endif %}><a href="{{ url_for('show_api.shows') }}">Shows</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
