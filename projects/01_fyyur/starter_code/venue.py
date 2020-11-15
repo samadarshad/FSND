@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from util import *
 from models import Venue, Show, db
 from forms import VenueForm
+import sys
 
 venue_api = Blueprint('venue_api', __name__)
 
@@ -17,7 +18,7 @@ def venues():
   data = groupVenuesByCityAndState()
   return render_template('pages/venues.html', areas=data);
 
-@venue_api.route('/<int:venue_id>')
+@venue_api.route('/<int:venue_id>', methods=['GET'])
 def show_venue(venue_id):
   venue = Venue.query.get(venue_id)
   upcoming_shows= venue.shows.filter(Show.isUpcoming).all()
@@ -93,13 +94,34 @@ def edit_venue_submission(venue_id):
 #----------------------------------------------------------------------------#
 # DELETE
 #----------------------------------------------------------------------------#
+@venue_api.route('/home')
+def home_test():  
+  return redirect(url_for('index'))
 
 @venue_api.route('/<venue_id>', methods=['DELETE'])
-def delete_venue(venue_id):
+def delete_venue(venue_id):  
+  error = False
+  venue = None
+  try:
+    venue = Venue.query.get(venue_id)
+    db.session.delete(venue)
+    db.session.commit()
+  except:
+    error = True
+    db.session.rollback()
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+  if error:
+    flash('An error occurred. Venue ' + venue.name + ' could not be deleted.')
+    # abort(400)
+  if not error:
+    flash('Venue ' + venue.name + ' was successfully deleted!')
+    return redirect(url_for('index'))
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
 
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  # return None
 
