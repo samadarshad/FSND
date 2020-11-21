@@ -76,7 +76,7 @@ def edit_artist_submission(artist_id):
     flash('An error occurred. Artist ' + request.form['name'] + ' could not be edited.')
   finally:
     db.session.close()
-  return redirect(url_for('show_artist', artist_id=artist_id))
+  return redirect(url_for('artist_api.show_artist', artist_id=artist_id))
 
 
 #----------------------------------------------------------------------------#
