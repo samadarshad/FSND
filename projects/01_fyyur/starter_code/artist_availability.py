@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from dateutil import parser
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from util import *
 from models import Artist, ArtistAvailability, db
 from forms import ArtistAvailabilityForm
@@ -42,13 +42,13 @@ def create_artist_submission(artist_id):
 # DELETE
 #----------------------------------------------------------------------------#
 
-@artist_availability_api.route('/<artist_id>', methods=['DELETE'])
-def delete_artist_availabiltiy(id):
+@artist_availability_api.route('/<artist_id>/availability/<availibility_id>', methods=['DELETE'])
+def delete_artist_availabiltiy(artist_id, availibility_id):
   print("deleting availability")
   error = False
   aa = None
   try:
-    aa = ArtistAvailability.query.get(id)
+    aa = ArtistAvailability.query.get(availibility_id)
     db.session.delete(aa)
     db.session.commit()
   except:
@@ -61,4 +61,4 @@ def delete_artist_availabiltiy(id):
     flash('An error occurred. Artist Availibility ' + aa.id + ' could not be deleted.')
   if not error:
     flash('Artist Availibility ' + aa.id + ' was successfully deleted!')
-  return redirect(url_for('index'))
+  return jsonify({'success' : True})

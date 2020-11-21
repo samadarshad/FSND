@@ -48,4 +48,28 @@
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
+
+<script type="text/javascript">
+  const todo_deletebuttons = document.querySelectorAll('.delete-availability-button');
+    for (let i = 0; i< todo_deletebuttons.length; i++) {
+        const deletebutton = todo_deletebuttons[i];
+        deletebutton.onclick = function(e) {
+            e.preventDefault();
+            console.log('click', e);
+            const todoId = e.target.dataset['id'];
+            console.log('id', todoId);
+            fetch('/artists/{{ artist.id }}/availability/' + todoId, {
+                method: 'DELETE'
+            })
+            .then(function() {
+                const item = e.target.parentElement;
+                item.remove();                        
+            })
+            .catch(function(e) {
+                console.error(e);
+            });
+        }
+    }
+
+  </script>  
 {% endblock %}
