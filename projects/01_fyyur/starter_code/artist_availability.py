@@ -58,7 +58,7 @@ def delete_artist_availabiltiy(artist_id, availibility_id):
   finally:
     db.session.close()
   if error:
-    flash('An error occurred. Artist Availibility ' + aa.id + ' could not be deleted.')
+    flash('An error occurred. Artist Availibility ' + str(aa.id) + ' could not be deleted.')
   if not error:
-    flash('Artist Availibility ' + aa.id + ' was successfully deleted!')
+    flash('Artist Availibility ' + str(aa.id) + ' was successfully deleted!')
   return jsonify({'success' : True})
