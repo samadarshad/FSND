@@ -32,6 +32,19 @@
           <label for="facebook_link">Facebook Link</label>
           {{ form.facebook_link(class_ = 'form-control', placeholder=artist.facebook_link, autofocus = true) }}
         </div>
+      <section>
+        {% if artist.availability.all()|length > 0 %}
+        <h2 class="monospace">Availability</h2>
+        <div class="row">
+          {% for a in artist.availability %}
+          <li>
+            {{ a.start_time|datetime('full') }} to {{ a.end_time|datetime('full') }}
+            <button class="delete-availability-button" data-id="{{ a.id }}">&cross;</button> 
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section> 
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>

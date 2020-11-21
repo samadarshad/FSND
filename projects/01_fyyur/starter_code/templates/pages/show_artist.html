@@ -38,12 +38,19 @@
 			<i class="fas fa-moon"></i> Not currently seeking performance venues
 		</p>
 		{% endif %}
-		<p class="availability">
-			Availabilities: 
-			{% for a in artist.availability %}
-				{{ a.start_time|datetime('full') }} to {{ a.end_time|datetime('full') }} 
-			{% endfor %}
-		</p>
+
+		<section>
+			{% if artist.availability.all()|length > 0 %}
+			<h2 class="monospace">Availability</h2>
+			<div class="row">
+				{% for a in artist.availability %}
+				<li>
+					{{ a.start_time|datetime('full') }} to {{ a.end_time|datetime('full') }}
+				</li>
+				{% endfor %}
+			</div>
+			{% endif %}
+		</section> 
 	</div>
 	<div class="col-sm-6">
 		<img src="{{ artist.image_link }}" alt="Venue Image" />

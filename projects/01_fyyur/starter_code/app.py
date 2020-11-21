@@ -23,9 +23,11 @@ db.app = app
 from venue import venue_api
 from artist import artist_api
 from show import show_api
+from artist_availability import artist_availability_api
 app.register_blueprint(venue_api, url_prefix='/venues')
 app.register_blueprint(artist_api, url_prefix='/artists')
 app.register_blueprint(show_api, url_prefix='/shows')
+app.register_blueprint(artist_availability_api, url_prefix='/artists')
 migrate = Migrate(app, db, compare_type=True)
 
 #----------------------------------------------------------------------------#

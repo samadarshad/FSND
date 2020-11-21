@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
+from dateutil import parser
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from util import *
-from models import ArtistAvailability, db
+from models import Artist, ArtistAvailability, db
 from forms import ArtistAvailabilityForm
 import sys
 
@@ -10,25 +12,31 @@ artist_availability_api = Blueprint('artist_availability_api', __name__)
 # CREATE
 #----------------------------------------------------------------------------#
 
-@artist_availability_api.route('/create', methods=['GET'])
-def create_artist_form():
+@artist_availability_api.route('/<artist_id>/availability', methods=['GET'])
+def create_artist_form(artist_id):
   form = ArtistAvailabilityForm()
-  return render_template('forms/new_artist_availibility.html', form=form)
+  artist = Artist.query.get(artist_id)
+  return render_template('forms/new_availability.html', artist=artist, form=form)
 
-@artist_availability_api.route('/create', methods=['POST'])
-def create_artist_submission():
+@artist_availability_api.route('/<artist_id>/availability', methods=['POST'])
+def create_artist_submission(artist_id):
   try:
     aa = ArtistAvailability()
+    aa.artist_id = artist_id
     aa = populateObjectFromRequest(aa, request)
+    if (aa.end_time == ''):
+      print("Info: No end time submitted - adding 4 hours by default")
+      aa.end_time = dateutil.parser.parse(aa.start_time) + timedelta(hours=4)
+      print("end time: ", aa.end_time)
     db.session.add(aa)
     db.session.commit()
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    flash('Artist ' + Artist.query.get(artist_id).name + ' was successfully listed!')
   except:
     db.session.rollback()
-    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+    flash('An error occurred. Artist ' + Artist.query.get(artist_id).name + ' could not be listed.')
   finally:
     db.session.close()
-  return render_template('pages/home.html')
+  return redirect(url_for('artist_api.show_artist', artist_id=artist_id))
 
 #----------------------------------------------------------------------------#
 # DELETE
