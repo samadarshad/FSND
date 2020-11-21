@@ -124,7 +124,15 @@ class VenueForm(GeneralForm):
 class ArtistForm(GeneralForm):
     '''this is a subclass''' 
   
-   
+class ArtistAvailabilityForm(Form):
+    start_time = DateTimeField(
+        'start_time',
+        validators=[DataRequired()],
+        default= datetime.today()
+    )
+    end_time = DateTimeField(
+        'end_time'
+    )
     
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
