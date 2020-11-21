@@ -15,6 +15,9 @@ class ShowForm(Form):
         validators=[DataRequired()],
         default= datetime.today()
     )
+    end_time = DateTimeField(
+        'end_time'
+    )
 
 class GeneralForm(Form):
     name = StringField(
