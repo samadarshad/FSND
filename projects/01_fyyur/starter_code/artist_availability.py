@@ -5,6 +5,7 @@ from util import *
 from models import Artist, ArtistAvailability, db
 from forms import ArtistAvailabilityForm
 import sys
+from constants import *
 
 artist_availability_api = Blueprint('artist_availability_api', __name__)
 
@@ -25,8 +26,8 @@ def create_artist_submission(artist_id):
     aa.artist_id = artist_id
     aa = populateObjectFromRequest(aa, request)
     if (aa.end_time == ''):
-      print("Info: No end time submitted - adding 4 hours by default")
-      aa.end_time = dateutil.parser.parse(aa.start_time) + timedelta(hours=4)
+      print("Info: No end time submitted - adding default")
+      aa.end_time = dateutil.parser.parse(aa.start_time) + default_availability_slot_duration
       print("end time: ", aa.end_time)
     db.session.add(aa)
     db.session.commit()

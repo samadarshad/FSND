@@ -40,8 +40,8 @@
 		{% endif %}
 
 		<section>
-			{% if artist.availability.all()|length > 0 %}
 			<h2 class="monospace">Availability</h2>
+			{% if artist.availability.all()|length > 0 %}
 			<div class="row">
 				{% for a in artist.availability %}
 				<li>
@@ -49,6 +49,10 @@
 				</li>
 				{% endfor %}
 			</div>
+			{% else %}
+			<p>
+				Unspecified (this means the artist is fully availabile).
+			</p>
 			{% endif %}
 		</section> 
 	</div>
