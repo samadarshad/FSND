@@ -24,6 +24,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String, nullable=True)
     shows = db.relationship('Show', backref='venue', lazy='dynamic')
+    creation_date = db.Column(db.DateTime, nullable=False)
 
 class Artist(db.Model):
     __tablename__ = 'Artist'
@@ -41,6 +42,7 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String, nullable=True)
     shows = db.relationship('Show', backref='artist', lazy='dynamic')    
     availability = db.relationship('ArtistAvailability', backref='artist', lazy='dynamic')
+    creation_date = db.Column(db.DateTime, nullable=False)
 
 class ArtistAvailability(db.Model):
     __tablename__ = 'ArtistAvailability'
