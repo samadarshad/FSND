@@ -20,7 +20,6 @@ def artists():
 def search_artists():
   search_term = request.form.get('search_term')
   terms = splitSearchTerm(search_term)
-  print(terms)
   responseByName = Artist.query.filter(or_(*[Artist.name.ilike('%' + term + '%') for term in terms])).all()
   responseByCityState = Artist.query.filter(or_(*[Artist.city.ilike('%' + term + '%') for term in terms],
                                                 *[Artist.state.ilike('%' + term + '%') for term in terms])).all()

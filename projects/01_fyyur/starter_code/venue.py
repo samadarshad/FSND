@@ -3,7 +3,7 @@ from util import *
 from models import Venue, Show, db
 from forms import VenueForm
 import sys
-
+from sqlalchemy import or_
 venue_api = Blueprint('venue_api', __name__)
 
 #----------------------------------------------------------------------------#
@@ -54,8 +54,15 @@ def create_venue_submission():
 
 @venue_api.route('/search', methods=['POST'])
 def search_venues():
-  response = Venue.query.filter(Venue.name.ilike('%' + request.form.get('search_term') + '%')).all()
-  return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
+  search_term = request.form.get('search_term')
+  terms = splitSearchTerm(search_term)
+  responseByName = Venue.query.filter(or_(*[Venue.name.ilike('%' + term + '%') for term in terms])).all()
+  responseByCityState = Venue.query.filter(or_(*[Venue.city.ilike('%' + term + '%') for term in terms],
+                                                *[Venue.state.ilike('%' + term + '%') for term in terms])).all()
+  return render_template('pages/search_venues.html', 
+  resultsByName=responseByName, 
+  resultsByCityState=responseByCityState, 
+  search_term=request.form.get('search_term', ''))
 
 #----------------------------------------------------------------------------#
 # UPDATE
