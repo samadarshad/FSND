@@ -43,6 +43,7 @@ def create_artist_submission():
   try:
     artist = Artist()
     artist = populateObjectFromRequest(artist, request)
+    artist.creation_date = datetime.today()
     db.session.add(artist)
     db.session.commit()
     flash('Artist ' + request.form['name'] + ' was successfully listed!')
@@ -51,7 +52,8 @@ def create_artist_submission():
     flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
   finally:
     db.session.close()
-  return render_template('pages/home.html')
+  return redirect(url_for('index'))
+  # return render_template('pages/home.html')
 
 #----------------------------------------------------------------------------#
 # UPDATE
@@ -77,7 +79,6 @@ def edit_artist_submission(artist_id):
   finally:
     db.session.close()
   return redirect(url_for('artist_api.show_artist', artist_id=artist_id))
-
 
 #----------------------------------------------------------------------------#
 # DELETE

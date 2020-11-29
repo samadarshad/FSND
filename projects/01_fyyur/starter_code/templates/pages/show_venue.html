@@ -8,6 +8,8 @@
 		</h1>
 		<p class="subtitle">
 			ID: {{ venue.id }}
+			<br>
+			Date Created: {{ venue.creation_date|datetime('full') }}
 		</p>
 		<div class="genres">
 			{% for genre in venue.genres %}

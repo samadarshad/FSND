@@ -41,6 +41,7 @@ def create_venue_submission():
   try:
     venue = Venue()
     venue = populateObjectFromRequest(venue, request)
+    venue.creation_date = datetime.today()
     db.session.add(venue)
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully listed!')
@@ -49,7 +50,7 @@ def create_venue_submission():
     flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
   finally:
     db.session.close()
-  return render_template('pages/home.html')
+  return redirect(url_for('index'))
 
 @venue_api.route('/search', methods=['POST'])
 def search_venues():

@@ -64,4 +64,4 @@ def create_show_submission():
     flash('An error occurred. Show could not be listed.')
   finally:
     db.session.close()
-  return render_template('pages/home.html')
+  return redirect(url_for('index'))

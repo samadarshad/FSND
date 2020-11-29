@@ -8,6 +8,8 @@
 		</h1>
 		<p class="subtitle">
 			ID: {{ artist.id }}
+			<br>
+			Date Created: {{ artist.creation_date|datetime('full') }}
 		</p>
 		<div class="genres">
 			{% for genre in artist.genres %}

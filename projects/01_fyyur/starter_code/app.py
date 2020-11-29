@@ -40,9 +40,19 @@ app.jinja_env.filters['datetime'] = format_datetime
 # Controllers.
 #----------------------------------------------------------------------------#
 
+def getMostRecentlyListedItems():
+    a = db.session.query(Artist.name, Artist.id, Artist.creation_date, sqlalchemy.sql.expression.literal(Artist.__tablename__).label("tablename"))
+    v = db.session.query(Venue.name, Venue.id, Venue.creation_date, sqlalchemy.sql.expression.literal(Venue.__tablename__).label("tablename"))
+  
+    assert(a.union(v).order_by(Artist.creation_date.desc()).all() == a.union(v).order_by(Venue.creation_date.desc()).all())
+
+    most_recent_items = a.union(v).order_by(Artist.creation_date.desc()).limit(10).all()
+    return most_recent_items
+
 @app.route('/')
 def index():
-  return render_template('pages/home.html')
+    recentItems = getMostRecentlyListedItems()
+    return render_template('pages/home.html', recentItems=recentItems)
 
 @app.errorhandler(404)
 def not_found_error(error):
