@@ -3,6 +3,10 @@ import sqlalchemy.sql.sqltypes
 import inspect
 import dateutil.parser
 import babel
+import re
+
+def splitSearchTerm(searchTerm):
+  return re.split('; |, |\*|\n',searchTerm)
 
 def groupClassBy(db, dbClass, dbClassDictKeyName, *argv):
   listOfAttributes = []

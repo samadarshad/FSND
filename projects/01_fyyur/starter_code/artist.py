@@ -3,6 +3,7 @@ from util import *
 from models import Artist, Show, db
 from forms import ArtistForm
 import sys
+from sqlalchemy import or_
 
 artist_api = Blueprint('artist_api', __name__)
 
@@ -17,8 +18,16 @@ def artists():
 
 @artist_api.route('/search', methods=['POST'])
 def search_artists():
-  response = Artist.query.filter(Artist.name.ilike('%' + request.form.get('search_term') + '%')).all()
-  return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
+  search_term = request.form.get('search_term')
+  terms = splitSearchTerm(search_term)
+  print(terms)
+  responseByName = Artist.query.filter(or_(*[Artist.name.ilike('%' + term + '%') for term in terms])).all()
+  responseByCityState = Artist.query.filter(or_(*[Artist.city.ilike('%' + term + '%') for term in terms],
+                                                *[Artist.state.ilike('%' + term + '%') for term in terms])).all()
+  return render_template('pages/search_artists.html', 
+  resultsByName=responseByName, 
+  resultsByCityState=responseByCityState, 
+  search_term=request.form.get('search_term', ''))
 
 @artist_api.route('/<int:artist_id>')
 def show_artist(artist_id):
@@ -53,7 +62,6 @@ def create_artist_submission():
   finally:
     db.session.close()
   return redirect(url_for('index'))
-  # return render_template('pages/home.html')
 
 #----------------------------------------------------------------------------#
 # UPDATE
