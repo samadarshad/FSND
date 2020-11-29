@@ -1,5 +1,5 @@
 import sys
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from util import *
 from models import Artist, ArtistAvailability, Show, db
 from forms import ShowForm
