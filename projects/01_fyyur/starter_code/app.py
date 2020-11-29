@@ -52,7 +52,10 @@ def getMostRecentlyListedItems():
 @app.route('/')
 def index():
     recentItems = getMostRecentlyListedItems()
-    return render_template('pages/home.html', recentItems=recentItems)
+    return render_template('pages/home.html', recentItems=recentItems, 
+    artist_tablename=Artist.__tablename__,
+    venue_tablename=Venue.__tablename__
+    )
 
 @app.errorhandler(404)
 def not_found_error(error):

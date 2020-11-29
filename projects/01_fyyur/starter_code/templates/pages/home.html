@@ -19,16 +19,14 @@
 		</h3>
 		<p class="lead">Most recently listed artists and venues.</p>
 		{% for item in recentItems %}
-			{% if item.tablename == 'Artist' %}
-				<li>
-				<a href="{{ url_for('artist_api.show_artist', artist_id=item.id) }}">{{ item.tablename }}: {{ item.name }}, created {{ item.creation_date|datetime('medium') }}</a>	
-				</li>
-			{% elif item.tablename == 'Venue' %}
-				<li>
-				<a href="{{ url_for('venue_api.show_venue', venue_id=item.id) }}">{{ item.tablename }}: {{ item.name }}, created {{ item.creation_date|datetime('medium') }}</a>	
-				</li>
+			<li>
+			{% if item.tablename == artist_tablename %}
+				<a href="{{ url_for('artist_api.show_artist', artist_id=item.id) }}">
+			{% elif item.tablename == venue_tablename %}
+				<a href="{{ url_for('venue_api.show_venue', venue_id=item.id) }}">
 			{% endif %}
-		<!-- {{ item.name, item.tablename, item.creation_date }} -->
+			{{ item.tablename }}: {{ item.name }}, created {{ item.creation_date|datetime('medium') }}</a>	
+			</li>
 		{% endfor %}
 	</div>
 	<div class="col-sm-6 hidden-sm hidden-xs">
