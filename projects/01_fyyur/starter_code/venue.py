@@ -80,7 +80,8 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
   try:
     venue = Venue.query.get(venue_id)
-    venue = populateObjectFromRequest(venue, request)
+    form = VenueForm(request.form)
+    venue = populateObjectFromForm(venue, form)
     db.session.commit()
     flash('Venue ' + request.form['name'] + ' was successfully edited!')
   except:
