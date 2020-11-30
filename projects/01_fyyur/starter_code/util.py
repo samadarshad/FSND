@@ -36,23 +36,8 @@ def populateObjectFromForm(obj, form):
   attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
   for a in attributes:
     if a in form:
-      print(a)
-      print(getattr(form, a).data)
       setattr(obj, a, getattr(form, a).data)
   return obj 
-
-def populateObjectFromRequest(obj, request):
-  attributes = inspect.getmembers(obj, lambda a:not(inspect.isroutine(a)))
-  attributes = [a[0] for a in attributes if not(a[0].startswith('_'))]
-  for a in attributes:
-    if a in request.form: 
-      if isinstance(getattr(type(obj), a).type, sqlalchemy.sql.sqltypes.ARRAY):
-        setattr(obj, a, request.form.getlist(a))
-      else:
-        # print(a)
-        # print(getattr(type(obj), a).type)
-        setattr(obj, a, request.form[a])
-  return obj
 
 def setFormDefaultValues(form, obj):
   attributes = inspect.getmembers(form, lambda a:not(inspect.isroutine(a)))

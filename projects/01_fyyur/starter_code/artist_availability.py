@@ -26,9 +26,9 @@ def create_artist_submission(artist_id):
     aa.artist_id = artist_id
     form = ArtistAvailabilityForm(request.form)
     aa = populateObjectFromForm(aa, form)
-    if (aa.end_time == ''):
+    if (aa.end_time == None):
       print("Info: No end time submitted - adding default")
-      aa.end_time = dateutil.parser.parse(aa.start_time) + default_availability_slot_duration
+      aa.end_time = aa.start_time + default_availability_slot_duration
       print("end time: ", aa.end_time)
     db.session.add(aa)
     db.session.commit()
