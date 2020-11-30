@@ -47,9 +47,9 @@ def create_show_submission():
     show = Show()
     form = ShowForm(request.form)
     show = populateObjectFromForm(show, form)
-    if (show.end_time == ''):
+    if (show.end_time == None):
       print("Info: No end time submitted - adding default")
-      show.end_time = dateutil.parser.parse(show.start_time) + default_booking_slot_duration
+      show.end_time = show.start_time + default_booking_slot_duration
       print("end time: ", show.end_time)
     if not isShowWithinArtistAvailibility(show):
       raise ArtistUnavailable
