@@ -13,8 +13,8 @@ def groupClassBy(db, dbClass, dbClassDictKeyName, *argv):
   listOfAttributes = []
   for arg in argv:
     listOfAttributes.append(getattr(dbClass, arg))
-  caseInsensitive_listOfAttributes = [sqlalchemy.func.lower(attr) for attr in listOfAttributes]
-  groupedClass = db.session.query(*caseInsensitive_listOfAttributes).group_by(*caseInsensitive_listOfAttributes).all()
+  # caseInsensitive_listOfAttributes = [sqlalchemy.func.lower(attr) for attr in listOfAttributes]
+  groupedClass = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
 
   ## make into dictionary
   groupedClassDict = []
@@ -28,7 +28,7 @@ def groupClassBy(db, dbClass, dbClassDictKeyName, *argv):
   
   ## append origional class as a key-value in the dictionary
   for r in groupedClassDict:
-    filterings = [(attr==r[arg]) for attr, arg in zip(caseInsensitive_listOfAttributes, argv)]
+    filterings = [(attr==r[arg]) for attr, arg in zip(listOfAttributes, argv)]
     selectedvenues = dbClass.query.filter(*filterings).all()
     groupedClassDict_withClass.append({**r, **{dbClassDictKeyName: selectedvenues}})
 
