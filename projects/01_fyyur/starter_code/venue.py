@@ -40,7 +40,8 @@ def create_venue_form():
 def create_venue_submission():
   try:
     venue = Venue()
-    venue = populateObjectFromRequest(venue, request)
+    form = VenueForm(request.form)
+    venue = populateObjectFromForm(venue, form)
     venue.creation_date = datetime.today()
     db.session.add(venue)
     db.session.commit()

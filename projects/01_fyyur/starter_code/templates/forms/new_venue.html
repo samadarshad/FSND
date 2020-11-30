@@ -40,6 +40,18 @@
           <label for="image_link">Image Link</label>
           {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
       </div>
+      <div class="form-group">
+        <label>Seeking Talent</label>
+        <small>Check box if seeking talent</small>
+        <div class="form-inline">
+          <div class="form-group">
+            {{ form.seeking(class_ = 'form-control', autofocus = true) }}
+          </div>
+          <div class="form-group">
+            {{ form.seeking_description(class_ = 'form-control', placeholder='Optional description', autofocus = true) }}
+          </div>
+        </div>
+    </div>
       <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
