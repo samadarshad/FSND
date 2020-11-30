@@ -50,7 +50,8 @@ def create_artist_form():
 def create_artist_submission():
   try:
     artist = Artist()
-    artist = populateObjectFromRequest(artist, request)
+    form = ArtistForm(request.form)
+    artist = populateObjectFromForm(artist, form)
     artist.creation_date = datetime.today()
     db.session.add(artist)
     db.session.commit()
@@ -77,7 +78,8 @@ def edit_artist(artist_id):
 def edit_artist_submission(artist_id):
   try:
     artist = Artist.query.get(artist_id)
-    artist = populateObjectFromRequest(artist, request)
+    form = ArtistForm(request.form)
+    artist = populateObjectFromForm(artist, form)
     db.session.commit()
     flash('Artist ' + request.form['name'] + ' was successfully edited!')
   except:

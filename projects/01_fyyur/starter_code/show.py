@@ -45,7 +45,8 @@ class ArtistUnavailable(Exception):
 def create_show_submission():
   try:
     show = Show()
-    show = populateObjectFromRequest(show, request)
+    form = ShowForm(request.form)
+    show = populateObjectFromForm(show, form)
     if (show.end_time == ''):
       print("Info: No end time submitted - adding default")
       show.end_time = dateutil.parser.parse(show.start_time) + default_booking_slot_duration
