@@ -9,13 +9,15 @@ def splitSearchTerm(searchTerm):
   return re.split('; |, |\*|\n',searchTerm)
 
 def groupClassBy(db, dbClass, dbClassDictKeyName, *argv):
+  ## group together classes
   listOfAttributes = []
   for arg in argv:
     listOfAttributes.append(getattr(dbClass, arg))
-  groupedClass = db.session.query(*listOfAttributes).group_by(*listOfAttributes).all()
+  caseInsensitive_listOfAttributes = [sqlalchemy.func.lower(attr) for attr in listOfAttributes]
+  groupedClass = db.session.query(*caseInsensitive_listOfAttributes).group_by(*caseInsensitive_listOfAttributes).all()
 
+  ## make into dictionary
   groupedClassDict = []
-
   for vals in groupedClass:
     keyvalues = {}
     for arg, val in zip(argv, vals):
@@ -23,9 +25,10 @@ def groupClassBy(db, dbClass, dbClassDictKeyName, *argv):
     groupedClassDict.append(keyvalues)
   
   groupedClassDict_withClass = []  
-
+  
+  ## append origional class as a key-value in the dictionary
   for r in groupedClassDict:
-    filterings = [(attr==r[arg]) for attr, arg in zip(listOfAttributes, argv)]
+    filterings = [(attr==r[arg]) for attr, arg in zip(caseInsensitive_listOfAttributes, argv)]
     selectedvenues = dbClass.query.filter(*filterings).all()
     groupedClassDict_withClass.append({**r, **{dbClassDictKeyName: selectedvenues}})
 
