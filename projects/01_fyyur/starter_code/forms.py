@@ -2,6 +2,7 @@ from datetime import datetime
 from flask_wtf import Form
 from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
 from wtforms.validators import DataRequired, AnyOf, URL
+import constants
 
 class GeneralForm(Form):
     name = StringField(
@@ -125,7 +126,8 @@ class ArtistAvailabilityForm(Form):
         default= datetime.today()
     )
     end_time = DateTimeField(
-        'end_time'
+        'end_time',
+        render_kw={"placeholder": constants.placeholder_availability}
     )
 
 class ShowForm(Form):
@@ -141,5 +143,6 @@ class ShowForm(Form):
         default= datetime.today()
     )
     end_time = DateTimeField(
-        'end_time'
+        'end_time',
+        render_kw={"placeholder": constants.placeholder_booking}
     )
