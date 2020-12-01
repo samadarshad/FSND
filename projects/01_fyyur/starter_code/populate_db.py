@@ -1,4 +1,7 @@
+#THIS ONLY WORKS ON DB VERSION 508072839f98
+###########################################
 from app import db, Artist, Venue, Show
+
 
 venue1 = Venue(
     name="The Musical Hop", 
@@ -70,14 +73,14 @@ artist3 = Artist(
     city = "San Francisco",
     state = "CA",
     phone = "432-325-5432",
-    seeking_venue = False,
+    seekingz = False,
     image_link = "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80"
 )
 
 
 db.session.close()
-db.drop_all()
-db.create_all()
+# db.drop_all()
+# db.create_all()
 
 db.session.add(venue1)
 db.session.add(venue2)
