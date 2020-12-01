@@ -6,33 +6,90 @@
       <h3 class="form-heading">Edit artist <em>{{ artist.name }}</em></h3>
       <div class="form-group">
         <label for="name">Name</label>
-        {{ form.name(class_ = 'form-control', autofocus = true) }}
+        {{ form.name(class_ = 'form-control', placeholder=artist.name, autofocus = true) }}
       </div>
       <div class="form-group">
           <label>City & State</label>
           <div class="form-inline">
             <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
+              {{ form.city(class_ = 'form-control', placeholder=artist.city, autofocus = true) }}
             </div>
             <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
+              {{ form.state(class_ = 'form-control', autofocus = true) }}
             </div>
           </div>
       </div>
       <div class="form-group">
           <label for="phone">Phone</label>
-          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+          {{ form.phone(class_ = 'form-control', placeholder=artist.phone, autofocus = true) }}
         </div>
       <div class="form-group">
         <label for="genres">Genres</label>
         <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', id=form.state, autofocus = true) }}
+        {{ form.genres(class_ = 'form-control', default=artist.genres, autofocus = true) }}
       </div>
       <div class="form-group">
-          <label for="genres">Facebook Link</label>
-          {{ form.facebook_link(class_ = 'form-control', placeholder='http://', id=form.state, autofocus = true) }}
+          <label for="facebook_link">Facebook Link</label>
+          {{ form.facebook_link(class_ = 'form-control', placeholder=artist.facebook_link, autofocus = true) }}
+      </div>
+      <div class="form-group">
+        <label for="website">Website</label>
+        {{ form.website(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+      </div>
+      <div class="form-group">
+        <label for="image_link">Image Link</label>
+        {{ form.image_link(class_ = 'form-control', placeholder=artist.image_link, autofocus = true) }}
+      </div>
+      <div class="form-group">
+        <label>Seeking Venues</label>
+        <small>Check box if seeking venues</small>
+        <div class="form-inline">
+          <div class="form-group">
+            {{ form.seeking(class_ = 'form-control', autofocus = true) }}
+          </div>
+          <div class="form-group">
+            {{ form.seeking_description(class_ = 'form-control', placeholder='Optional description', autofocus = true) }}
+          </div>
         </div>
+    </div>
+      <section>
+        {% if artist.availability.all()|length > 0 %}
+        <h2 class="monospace">Availability</h2>
+        <div class="row">
+          {% for a in artist.availability %}
+          <li>
+            {{ a.start_time|datetime('full') }} to {{ a.end_time|datetime('full') }}
+            <button class="delete-availability-button" data-id="{{ a.id }}">&cross;</button> 
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section> 
       <input type="submit" value="Edit Artist" class="btn btn-primary btn-lg btn-block">
     </form>
   </div>
+
+<script type="text/javascript">
+  const todo_deletebuttons = document.querySelectorAll('.delete-availability-button');
+    for (let i = 0; i< todo_deletebuttons.length; i++) {
+        const deletebutton = todo_deletebuttons[i];
+        deletebutton.onclick = function(e) {
+            e.preventDefault();
+            console.log('click', e);
+            const todoId = e.target.dataset['id'];
+            console.log('id', todoId);
+            fetch('/artists/{{ artist.id }}/availability/' + todoId, {
+                method: 'DELETE'
+            })
+            .then(function() {
+                const item = e.target.parentElement;
+                item.remove();                        
+            })
+            .catch(function(e) {
+                console.error(e);
+            });
+        }
+    }
+
+  </script>  
 {% endblock %}

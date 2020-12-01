@@ -1,0 +1,16 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Add availability{% endblock %}
+{% block content %}
+  <div class="form-wrapper">
+    <form method="post" class="form">
+      <h3 class="form-heading">Add a new availability for {{artist.name}}</h3>
+      <div class="form-group">
+          <label for="start_time">Start Time</label>
+          {{ form.start_time(class_ = 'form-control', placeholder='YYYY-MM-DD HH:MM', autofocus = true) }}
+          <label for="end_time">End Time</label>
+          {{ form.end_time(class_ = 'form-control', autofocus = true) }}
+        </div>
+      <input type="submit" value="Add availability" class="btn btn-primary btn-lg btn-block">
+    </form>
+  </div>
+{% endblock %}

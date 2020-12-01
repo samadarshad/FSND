@@ -97,39 +97,61 @@ Instructions
 3. Fill out every `TODO` section throughout the codebase. We suggest going in order of the following:
 
   1. Connect to a database in `config.py`. A project submission that uses a local database connection is fine.
+  DONE
   2. Using SQLAlchemy, set up normalized models for the objects we support in our web app in the Models section of `app.py`. Check out the sample pages provided at /artists/1, /venues/1, and /shows/1 for examples of the data we want to model, using all of the learned best practices in database schema design. Implement missing model properties and relationships using database migrations via Flask-Migrate.
+  DONE
+
   3. Implement form submissions for creating new Venues, Artists, and Shows. There should be proper constraints, powering the `/create` endpoints that serve the create form templates, to avoid duplicate or nonsensical form submissions. Submitting a form should create proper new records in the database.
+  What should be unique?
+
   4. Implement the controllers for listing venues, artists, and shows. Note the structure of the mock data used. We want to keep the structure of the mock data.
+  DONE
   5. Implement search, powering the `/search` endpoints that serve the application's search functionalities.
+  DONE
   6. Serve venue and artist detail pages, powering the `<venue|artist>/<id>` endpoints that power the detail pages.
+  DONE
 
 
 Acceptance Criteria
 -----
 
 1. The web app should be successfully connected to a PostgreSQL database. A local connection to a database on your local computer is fine.
+DONE
 2. There should be no use of mock data throughout the app. The data structure of the mock data per controller should be kept unmodified when satisfied by real data.
+DONE
 3. The application should behave just as before with mock data, but now uses real data from a real backend server, with real search functionality. For example:
   * when a user submits a new artist record, the user should be able to see it populate in /artists, as well as search for the artist by name and have the search return results.
+  DONE
   * I should be able to go to the URL `/artist/<artist-id>` to visit a particular artist’s page using a unique ID per artist, and see real data about that particular artist.
+  DONE
   * Venues should continue to be displayed in groups by city and state.
+  DONE
   * Search should be allowed to be partial string matching and case-insensitive.
+  DONE
   * Past shows versus Upcoming shows should be distinguished in Venue and Artist pages.
+  DONE
   * A user should be able to click on the venue for an upcoming show in the Artist's page, and on that Venue's page, see the same show in the Venue Page's upcoming shows section.
+  DONE
 4. As a fellow developer on this application, I should be able to run `flask db migrate`, and have my local database (once set up and created) be populated with the right tables to run this application and have it interact with my local postgres server, serving the application's needs completely with real data I can seed my local database with.
   * The models should be completed (see TODOs in the `Models` section of `app.py`) and model the objects used throughout Fyyur.
+  DONE
   * The right _type_ of relationship and parent-child dynamics between models should be accurately identified and fit the needs of this particular application.
+  DONE
   * The relationship between the models should be accurately configured, and referential integrity amongst the models should be preserved.
+  DONE
   * `flask db migrate` should work, and populate my local postgres database with properly configured tables for this application's objects, including proper columns, column data types, constraints, defaults, and relationships that completely satisfy the needs of this application. The proper type of relationship between venues, artists, and shows should be configured.
+  DONE
 
 ##### Stand Out
 
 Looking to go above and beyond? This is the right section for you! Here are some challenges to make your submission stand out:
 
 *  Implement artist availability. An artist can list available times that they can be booked. Restrict venues from being able to create shows with artists during a show time that is outside of their availability.
+DONE
 * Show Recent Listed Artists and Recently Listed Venues on the homepage, returning results for Artists and Venues sorting by newly created. Limit to the 10 most recently listed items.
+DONE
 * Implement Search Artists by City and State, and Search Venues by City and State. Searching by "San Francisco, CA" should return all artists or venues in San Francisco, CA.
-
+DONE
 Best of luck in your final project! Fyyur depends on you!
 
 
@@ -156,7 +178,8 @@ git push -u origin master
 
 3. **Initialize and activate a virtualenv using:**
 ```
-python -m virtualenv env
+python -m virtualenv env 
+### I had to 1. enable symlinks, and 2. run vbox as admin: https://serverfault.com/questions/345341/cant-create-symlinks-in-virtualbox-shared-folders
 source env/bin/activate
 ```
 >**Note** - In Windows, the `env` does not have a `bin` directory. Therefore, you'd use the analogous command shown below:
@@ -174,6 +197,13 @@ pip install -r requirements.txt
 export FLASK_APP=myapp
 export FLASK_ENV=development # enables debug mode
 python3 app.py
+
+##### I did: 
+source env/bin/activate
+export FLASK_APP=app.py 
+export FLASK_ENV=development 
+flask run --port 5002
+then open: http://127.0.0.1:5002/
 ```
 
 6. **Verify on the Browser**<br>

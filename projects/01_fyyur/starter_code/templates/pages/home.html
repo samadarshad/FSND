@@ -17,6 +17,17 @@
 		<h3>
 			<a href="/shows/create"><button class="btn btn-default btn-lg">Post a show</button></a>
 		</h3>
+		<p class="lead">Most recently listed artists and venues.</p>
+		{% for item in recentItems %}
+			<li>
+			{% if item.tablename == artist_tablename %}
+				<a href="{{ url_for('artist_api.show_artist', artist_id=item.id) }}">
+			{% elif item.tablename == venue_tablename %}
+				<a href="{{ url_for('venue_api.show_venue', venue_id=item.id) }}">
+			{% endif %}
+			{{ item.tablename }}: {{ item.name }}, created {{ item.creation_date|datetime('medium') }}</a>	
+			</li>
+		{% endfor %}
 	</div>
 	<div class="col-sm-6 hidden-sm hidden-xs">
 		<img id="front-splash" src="{{ url_for('static',filename='img/front-splash.jpg') }}" alt="Front Photo of Musical Band" />

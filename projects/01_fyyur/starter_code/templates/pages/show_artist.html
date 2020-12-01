@@ -8,6 +8,8 @@
 		</h1>
 		<p class="subtitle">
 			ID: {{ artist.id }}
+			<br>
+			Date Created: {{ artist.creation_date|datetime('full') }}
 		</p>
 		<div class="genres">
 			{% for genre in artist.genres %}
@@ -26,7 +28,7 @@
 		<p>
 			<i class="fab fa-facebook-f"></i> {% if artist.facebook_link %}<a href="{{ artist.facebook_link }}" target="_blank">{{ artist.facebook_link }}</a>{% else %}No Facebook Link{% endif %}
         </p>
-		{% if artist.seeking_venue %}
+		{% if artist.seeking %}
 		<div class="seeking">
 			<p class="lead">Currently seeking performance venues</p>
 			<div class="description">
@@ -38,19 +40,36 @@
 			<i class="fas fa-moon"></i> Not currently seeking performance venues
 		</p>
 		{% endif %}
+
+		<section>
+			<h2 class="monospace">Availability</h2>
+			{% if artist.availability.all()|length > 0 %}
+			<div class="row">
+				{% for a in artist.availability %}
+				<li>
+					{{ a.start_time|datetime('full') }} to {{ a.end_time|datetime('full') }}
+				</li>
+				{% endfor %}
+			</div>
+			{% else %}
+			<p>
+				Unspecified (this means the artist is fully availabile).
+			</p>
+			{% endif %}
+		</section> 
 	</div>
 	<div class="col-sm-6">
-		<img src="{{ artist.image_link }}" alt="Venue Image" />
+		<img src="{{ artist.image_link }}" alt="Artist Image" />
 	</div>
 </div>
 <section>
-	<h2 class="monospace">{{ artist.upcoming_shows_count }} Upcoming {% if artist.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ upcoming_shows|length }} Upcoming {% if upcoming_shows|length == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in artist.upcoming_shows %}
+		{%for show in upcoming_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
-				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
+				<img src="{{ show.venue.image_link }}" alt="Show Venue Image" />
+				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue.name }}</a></h5>
 				<h6>{{ show.start_time|datetime('full') }}</h6>
 			</div>
 		</div>
@@ -58,19 +77,37 @@
 	</div>
 </section>
 <section>
-	<h2 class="monospace">{{ artist.past_shows_count }} Past {% if artist.past_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ past_shows|length }} Past {% if past_shows|length == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in artist.past_shows %}
+		{%for show in past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
-				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
-				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
+				<img src="{{ show.venue.image_link }}" alt="Show Venue Image" />
+				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue.name }}</a></h5>
 				<h6>{{ show.start_time|datetime('full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
+<section>
+	<a href="/artists/{{ artist.id }}/availability"><button class = "btn btn-primary btn-lg" id="availability-button">Add availability</button></a>
+	<a href="/artists/{{ artist.id }}/edit"><button class = "btn btn-primary btn-lg" id="edit-button">Edit</button></a>
+	<button class = "btn btn-danger btn-lg" id="delete-button" >Delete</button>
+</section>
+
+
+<script type="text/javascript">
+	const btn = document.getElementById('delete-button');	
+  	btn.onclick = function(e) {
+	   fetch('/artists/{{ artist.id }}', {	
+	    	method: 'DELETE'	
+	   	})
+		.then(function() {
+			window.location = "/";
+		})	
+ 	}	
+</script>
 
 {% endblock %}
 
