@@ -140,7 +140,7 @@ DONE
   * The relationship between the models should be accurately configured, and referential integrity amongst the models should be preserved.
   DONE
   * `flask db migrate` should work, and populate my local postgres database with properly configured tables for this application's objects, including proper columns, column data types, constraints, defaults, and relationships that completely satisfy the needs of this application. The proper type of relationship between venues, artists, and shows should be configured.
-What constraints should there be? 
+  DONE
 
 ##### Stand Out
 
