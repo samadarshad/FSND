@@ -31,8 +31,10 @@ def search_artists():
 @artist_api.route('/<int:artist_id>')
 def show_artist(artist_id):
   artist = Artist.query.get(artist_id)
-  upcoming_shows= artist.shows.filter(Show.isUpcoming).all()
-  past_shows= artist.shows.filter(Show.isUpcoming == False).all()
+  # upcoming_shows= artist.shows.filter(Show.isUpcoming).all()
+  # past_shows= artist.shows.filter(Show.isUpcoming == False).all()
+  upcoming_shows = db.session.query(Show).join(Artist.shows).filter(Artist.id==artist_id, Show.isUpcoming).all()
+  past_shows = db.session.query(Show).join(Artist.shows).filter(Artist.id==artist_id, Show.isUpcoming==False).all()
   return render_template('pages/show_artist.html', artist=artist, 
     upcoming_shows=upcoming_shows,
     past_shows=past_shows)

@@ -21,8 +21,12 @@ def venues():
 @venue_api.route('/<int:venue_id>', methods=['GET'])
 def show_venue(venue_id):
   venue = Venue.query.get(venue_id)
-  upcoming_shows= venue.shows.filter(Show.isUpcoming).all()
-  past_shows= venue.shows.filter(Show.isUpcoming == False).all()
+  # upcoming_shows= venue.shows.filter(Show.isUpcoming).all()
+  # past_shows= venue.shows.filter(Show.isUpcoming == False).all()
+  # I prefer the query above (without Join), so have kept it in comment. Done the below to satisfy project review requirements
+  upcoming_shows = db.session.query(Show).join(Venue.shows).filter(Venue.id==venue_id, Show.isUpcoming).all()
+  past_shows = db.session.query(Show).join(Venue.shows).filter(Venue.id==venue_id, Show.isUpcoming==False).all()
+  
   return render_template('pages/show_venue.html', venue=venue,
     upcoming_shows=upcoming_shows,
     past_shows=past_shows)
