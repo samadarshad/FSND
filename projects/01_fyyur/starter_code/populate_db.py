@@ -1,6 +1,75 @@
-#THIS ONLY WORKS ON DB VERSION 508072839f98
-###########################################
-from app import db, Artist, Venue, Show
+#THIS ONLY WORKS ON DB VERSION 679779ce0d82, so on a new DB, do: 
+# createdb fyyurdb
+# flask db init
+# flask db upgrade '679779ce0d82'
+# python3 populate_db.py
+# flask db upgrade
+from flask import Flask
+from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+#----------------------------------------------------------------------------#
+# App Config.
+#----------------------------------------------------------------------------#
+
+app = Flask(__name__)
+moment = Moment(app)
+app.config.from_object('config')
+db.init_app(app)
+db.app = app
+
+#----------------------------------------------------------------------------#
+# Models.
+#----------------------------------------------------------------------------#
+
+class Venue(db.Model):
+    __tablename__ = 'Venue'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    city = db.Column(db.String(120))
+    state = db.Column(db.String(120))
+    address = db.Column(db.String(120))
+    phone = db.Column(db.String(120))
+    website = db.Column(db.String())
+    image_link = db.Column(db.String(500))
+    facebook_link = db.Column(db.String(120))
+    genres = db.Column(db.ARRAY(db.String(120)))
+    seeking_talent = db.Column(db.Boolean, default=False)
+    seeking_description = db.Column(db.String, nullable=True)
+    shows = db.relationship('Show', backref='venue', lazy=True)
+
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+
+class Artist(db.Model):
+    __tablename__ = 'Artist'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    city = db.Column(db.String(120))
+    state = db.Column(db.String(120))
+    phone = db.Column(db.String(120))
+    website = db.Column(db.String())
+    image_link = db.Column(db.String(500))
+    facebook_link = db.Column(db.String(120))
+    genres = db.Column(db.ARRAY(db.String(120)))
+    seeking_venue = db.Column(db.Boolean, default=False)
+    seeking_description = db.Column(db.String, nullable=True)
+    shows = db.relationship('Show', backref='artist', lazy=True)
+
+    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+
+# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+class Show(db.Model):
+  __tablename__ = 'Show'
+  id = db.Column(db.Integer, primary_key=True)
+  start_time = db.Column(db.DateTime, nullable=False)
+  artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+  venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+  # instead of artist_id, have the actual artist be referenced here, so you can do show.artist.id instead of show.artist_id
+
+
 
 
 venue1 = Venue(
@@ -73,14 +142,14 @@ artist3 = Artist(
     city = "San Francisco",
     state = "CA",
     phone = "432-325-5432",
-    seekingz = False,
+    seeking_venue = False,
     image_link = "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80"
 )
 
 
 db.session.close()
-# db.drop_all()
-# db.create_all()
+db.drop_all()
+db.create_all()
 
 db.session.add(venue1)
 db.session.add(venue2)

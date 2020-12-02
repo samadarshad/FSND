@@ -9,7 +9,7 @@ db = SQLAlchemy()
 #----------------------------------------------------------------------------#
 
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -23,11 +23,11 @@ class Venue(db.Model):
     genres = db.Column(db.ARRAY(db.String(120)))
     seeking = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String, nullable=True)
-    shows = db.relationship('Show', backref='venue', lazy='dynamic')
+    shows = db.relationship('Show', backref=__tablename__, lazy='dynamic')
     creation_date = db.Column(db.DateTime, nullable=False)
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -40,24 +40,24 @@ class Artist(db.Model):
     genres = db.Column(db.ARRAY(db.String(120)))
     seeking = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String, nullable=True)
-    shows = db.relationship('Show', backref='artist', lazy='dynamic')    
-    availability = db.relationship('ArtistAvailability', backref='artist', lazy='dynamic')
+    shows = db.relationship('Show', backref=__tablename__, lazy='dynamic')    
+    availability = db.relationship('ArtistAvailability', backref=__tablename__, lazy='dynamic')
     creation_date = db.Column(db.DateTime, nullable=False)
 
 class ArtistAvailability(db.Model):
-    __tablename__ = 'ArtistAvailability'
+    __tablename__ = 'artist_availabilities'
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), nullable=False)
 
 class Show(db.Model):
-  __tablename__ = 'Show'
+  __tablename__ = 'shows'
   id = db.Column(db.Integer, primary_key=True)
   start_time = db.Column(db.DateTime, nullable=False)
   end_time = db.Column(db.DateTime, nullable=False)
-  artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-  venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
+  artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), nullable=False)
+  venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'), nullable=False)
   
   @hybrid_property
   def isUpcoming(self):
