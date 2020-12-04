@@ -13,9 +13,13 @@ This project depends on Nodejs and Node Package Manager (NPM). Before continuing
 #### Installing project dependencies
 
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
-
+update npm and node
+sudo npm install -g npm
+delete node_modules folder
+npm cache clean --force
+https://stackoverflow.com/a/52519902/5464372 create symbolic linked folder
 ```bash
-npm install
+sudo npm install
 ```
 
 >_tip_: **npm i** is shorthand for **npm install**
@@ -29,7 +33,7 @@ The frontend app was built using create-react-app. In order to run the app in de
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser. The page will reload if you make edits.<br>
 
 ```bash
-npm start
+sudo npm start
 ```
 
 ## Request Formatting

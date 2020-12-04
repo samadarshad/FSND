@@ -45,11 +45,13 @@ From within the `backend` directory first ensure you are working using your crea
 To run the server, execute:
 
 ```bash
-source env/bin/activate
+# source env/bin/activate
+source /media/sf_share/FSND/projects/02_trivia_api/starter/env/bin/activate
 export FLASK_APP=flaskr
 export FLASK_ENV=development
 flask run -h localhost -p 5001
 ```
+note: the backend runs on port 5001, and the frontend website runs on port 3000 (and that connects to the backend's port 5001)
 <!-- flask run -->
 Setting the `FLASK_ENV` variable to `development` will detect file changes and restart the server automatically.
 
