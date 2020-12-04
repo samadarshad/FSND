@@ -15,7 +15,9 @@ We recommend working within a virtual environment whenever using Python for proj
 #### PIP Dependencies
 
 Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
-
+ python -m virtualenv env --always-copy
+ source env/bin/activate
+ edited requirements to have psycocb-binary latest version
 ```bash
 pip install -r requirements.txt
 ```
@@ -43,11 +45,12 @@ From within the `backend` directory first ensure you are working using your crea
 To run the server, execute:
 
 ```bash
+source env/bin/activate
 export FLASK_APP=flaskr
 export FLASK_ENV=development
-flask run
+flask run -h localhost -p 5001
 ```
-
+<!-- flask run -->
 Setting the `FLASK_ENV` variable to `development` will detect file changes and restart the server automatically.
 
 Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` directory and the `__init__.py` file to find the application. 
