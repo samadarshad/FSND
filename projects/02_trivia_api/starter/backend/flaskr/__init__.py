@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, json, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -30,6 +30,7 @@ def create_app(test_config=None):
   def index():
     return "hello"
 
+
   '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
@@ -42,6 +43,30 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  ITEMS_PER_PAGE = 10
+  def paginate_items(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start =  (page - 1) * ITEMS_PER_PAGE
+    end = start + ITEMS_PER_PAGE
+
+    items = [item.format() for item in selection]
+    current_items = items[start:end]
+
+    return current_items
+
+  @app.route('/questions')
+  def get_questions():
+    questions = Question.query.order_by(Question.id).all()
+    current_questions = paginate_items(request, questions)
+    categories = Category.query.all()
+    categories_formatted = {category.id: category.type for category in categories} #TODO clean: extract the formatting
+    return jsonify({
+      'success': True,
+      'questions': current_questions[0:10],
+      'total_questions': len(questions),
+      'categories': categories_formatted,
+      'current_category': categories_formatted[1]
+      })
 
   '''
   @TODO: 

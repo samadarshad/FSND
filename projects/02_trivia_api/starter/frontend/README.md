@@ -18,6 +18,10 @@ sudo npm install -g npm
 delete node_modules folder
 npm cache clean --force
 https://stackoverflow.com/a/52519902/5464372 create symbolic linked folder
+mkdir ~/fsnd
+mkdir ~/fsnd/2
+mkdir ~/fsnd/2/node_modules
+sudo ln -sf ~/fsnd/2/node_modules .
 ```bash
 sudo npm install
 ```
