@@ -77,7 +77,7 @@ DONE
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 DONE
 9. Create error handlers for all expected errors including 400, 404, 422 and 500.
-DONE - but which errors do I trigger where? Let me write tests
+DONE
 
 REVIEW_COMMENT
 ```
@@ -111,3 +111,4 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+DONE

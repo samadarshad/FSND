@@ -69,6 +69,14 @@ class TriviaTestCase(unittest.TestCase):
         delete_question = Question.query.filter(Question.question=='q1').all()
         self.assertFalse(delete_question)
 
+    def test_400_if_add_empty_question(self):
+        res = self.client().post('/questions', json={'question': None, 'answer': 'a1', 'difficulty': 5, 'category': 1})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Bad request")
+
     def test_search_question(self):
         res = self.client().post('/questions', json={'searchTerm': 'title'}) #this is question id 5 and 6 in the test database
         data = json.loads(res.data)
@@ -96,13 +104,13 @@ class TriviaTestCase(unittest.TestCase):
         question = Question.query.filter(Question.question=='q1').first()
         self.assertFalse(question)
 
-    def test_404_if_delete_nonexisting_question(self):
+    def test_422_if_delete_nonexisting_question(self):
         res = self.client().delete('/questions/1000')
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], "Resource not found")
+        self.assertEqual(data['message'], "Unprocessible entity")
 
     def test_get_categories(self):
         res = self.client().get('/categories')
@@ -140,12 +148,42 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], "Resource not found")
 
-    def test_post_question_to_quiz(self):
+    def test_post_random_question_to_quiz(self):
         res = self.client().post('/quizzes', json={'quiz_category': {'id': 0}, 'previous_questions': []}) 
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
+        self.assertTrue(0 <= data['question']['id'] <= 21)
+
+    def test_404_if_quiz_category_nonexist(self):
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 100}, 'previous_questions': []}) 
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Resource not found")
+
+    def test_post_non_previous_quiz_question(self):
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 6}, 'previous_questions': []}) #category 6 only has questions of id 10 and 11
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(data['question']['id'], [10, 11])
+
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 6}, 'previous_questions': [10]}) 
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(data['question']['id'], [11])
+
+    def test_404_if_no_quiz_question_remains(self):
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 6}, 'previous_questions': [10, 11]}) 
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Resource not found")
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

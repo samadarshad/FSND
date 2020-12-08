@@ -57,10 +57,10 @@ def create_app(test_config=None):
 
   @app.route('/questions', methods=['POST'])
   def add_or_search_question():
-    try:
-      body = request.get_json()
-      searchTerm = body.get('searchTerm', None)
-      if searchTerm:
+    body = request.get_json()
+    searchTerm = body.get('searchTerm', None)
+    if searchTerm:
+      try:
         questions = Question.query.filter(Question.question.ilike('%{}%'.format(searchTerm))).order_by(Question.id).all()
         current_questions = paginate_items(request, questions)
         return jsonify({
@@ -69,33 +69,36 @@ def create_app(test_config=None):
           'total_questions': len(questions),
           'current_category': None
           })
+      except:
+        abort(500)
 
-      else:
-        question = body.get('question', None)
-        answer = body.get('answer', None)
-        difficulty = body.get('difficulty', None)
-        category = body.get('category', None)
+    else:
+      question = body.get('question', None)
+      answer = body.get('answer', None)
+      difficulty = body.get('difficulty', None)
+      category = body.get('category', None)
+      if not question or not answer or not difficulty or not category:
+        abort(400)
+      try: 
         new_question = Question(question, answer, category, difficulty)
         new_question.insert()
+        return jsonify({
+          'success': True
+          })
+      except:
+        abort(500)
 
-      return jsonify({
-        'success': True
-        })
-    except:
-      abort(422)
 
   @app.route('/questions/<id>', methods=['DELETE'])
   def delete_question(id):
     question = Question.query.get(id)
-    if not question:
-      abort(404)
     try:      
       question.delete()
       return jsonify({
         'success': True
         })
     except:
-      abort(500)
+      abort(422)
 
   @app.route('/categories', methods=['GET'])
   def get_categories():
@@ -130,10 +133,10 @@ def create_app(test_config=None):
     body = request.get_json()
     previous_questions = body.get('previous_questions')
     quiz_category = body.get('quiz_category')['id']
-    if (quiz_category != 0):
-      query = Question.query.filter(Question.category==quiz_category)
-    else:
+    if (quiz_category == 0):
       query = Question.query
+    else:
+      query = Question.query.filter(Question.category==quiz_category)
     question = query.filter(~Question.id.in_(previous_questions)).order_by(func.random()).first()
     if question is None:
       abort(404)
@@ -143,14 +146,6 @@ def create_app(test_config=None):
       })
 
 
-  @app.errorhandler(404)
-  def not_found(error):
-    return jsonify({
-      "success": False,
-      "error": 404,
-      "message": "Resource not found"
-    }), 404
-
   @app.errorhandler(400)
   def bad_request(error):
     return jsonify({
@@ -158,6 +153,22 @@ def create_app(test_config=None):
       "error": 400,
       "message": "Bad request"
     }), 400
+
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      "success": False,
+      "error": 404,
+      "message": "Resource not found"
+    }), 404
+    
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+    return jsonify({
+      "success": False,
+      "error": 405,
+      "message": "Method not allowed"
+    }), 405
 
   @app.errorhandler(422)
   def unprocessible_entity(error):
@@ -175,14 +186,7 @@ def create_app(test_config=None):
       "message": "Internal server error"
     }), 500
 
-  @app.errorhandler(405)
-  def method_not_allowed(error):
-    return jsonify({
-      "success": False,
-      "error": 405,
-      "message": "Method not allowed"
-    }), 405
-
+ 
   
   return app
 
