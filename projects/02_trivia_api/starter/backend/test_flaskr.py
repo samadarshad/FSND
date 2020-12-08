@@ -29,10 +29,6 @@ class TriviaTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
     def test_get_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
@@ -53,19 +49,103 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], "Resource not found")
 
     def test_add_question(self):
+        # setup: clear all questions 'q1'
         delete_question = Question.query.filter(Question.question=='q1').all()
         [q.delete() for q in delete_question]
         delete_question = Question.query.filter(Question.question=='q1').all()
         self.assertFalse(delete_question)
-        
+
+        # test
         res = self.client().post('/questions', json={'question': 'q1', 'answer': 'a1', 'difficulty': 5, 'category': 1})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         question = Question.query.filter(Question.question=='q1').first()
         self.assertTrue(question)
-    # when wanting to test DELETE endpoint, do this: create a new question via backend, then delete using frontend endpoint - https://knowledge.udacity.com/questions/312483
 
+        # teardown: clear all questions 'q1'
+        delete_question = Question.query.filter(Question.question=='q1').all()
+        [q.delete() for q in delete_question]
+        delete_question = Question.query.filter(Question.question=='q1').all()
+        self.assertFalse(delete_question)
+
+    def test_search_question(self):
+        res = self.client().post('/questions', json={'searchTerm': 'title'}) #this is question id 5 and 6 in the test database
+        data = json.loads(res.data)
+        expected_questions = [Question.query.get(5).format(), Question.query.get(6).format()]
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['questions'], expected_questions)
+        self.assertEqual(data['total_questions'], 2)
+
+    def test_delete_question(self):
+        # setup: clear all questions 'q1'
+        delete_question = Question.query.filter(Question.question=='q1').all()
+        [q.delete() for q in delete_question]
+
+        # setup: add question 'q1'
+        add_question = Question('q1', 'a1', 5, 1)
+        add_question.insert()
+        question = Question.query.filter(Question.question=='q1').all()
+        self.assertTrue(question)
+
+        res = self.client().delete('/questions/{}'.format(add_question.id))
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        question = Question.query.filter(Question.question=='q1').first()
+        self.assertFalse(question)
+
+    def test_404_if_delete_nonexisting_question(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Resource not found")
+
+    def test_get_categories(self):
+        res = self.client().get('/categories')
+        data = json.loads(res.data)
+
+        expected_categories = Category.query.all()
+        expected_categories_formatted = {str(category.id): category.type for category in expected_categories}
+        
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['categories'], expected_categories_formatted)
+
+    def test_405_if_post_to_categories(self):
+        res = self.client().post('/categories')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Method not allowed")
+
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/1/questions') #questions in category 1 are id:20, 21 and 22
+        data = json.loads(res.data)
+        
+        expected_questions = [Question.query.get(20).format(), Question.query.get(21).format(), Question.query.get(22).format()]
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['current_category'], 1)
+        self.assertEqual(data['questions'], expected_questions)
+
+    def test_404_if_get_nonexisting_category(self):
+        res = self.client().get('/categories/100/questions') 
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "Resource not found")
+
+    def test_post_question_to_quiz(self):
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 0}, 'previous_questions': []}) 
+        data = json.loads(res.data)
+        
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['question'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

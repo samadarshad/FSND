@@ -14,3 +14,9 @@ Thumbs.db
 projects/01_fyyur/starter_code/node_modules/
 
 projects/02_trivia_api/starter/frontend/node_modules/
+
+projects/02_trivia_api/starter/frontend/node_modules
+
+projects/02_trivia_api/starter/frontend/package-lock.json
+
+projects/02_trivia_api/starter/package-lock.json
