@@ -151,13 +151,15 @@ class TriviaTestCase(unittest.TestCase):
     def test_post_random_question_to_quiz(self):
         res = self.client().post('/quizzes', json={'quiz_category': {'id': 0}, 'previous_questions': []}) 
         data = json.loads(res.data)
-        
+        minimumId = Question.query.order_by(Question.id).first().id
+        maximumId = Question.query.order_by(Question.id.desc()).first().id
+
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['question'])
-        self.assertTrue(0 <= data['question']['id'] <= 21)
+        self.assertTrue(minimumId <= data['question']['id'] <= maximumId)
 
     def test_404_if_quiz_category_nonexist(self):
-        res = self.client().post('/quizzes', json={'quiz_category': {'id': 100}, 'previous_questions': []}) 
+        res = self.client().post('/quizzes', json={'quiz_category': {'id': 1000}, 'previous_questions': []}) 
         data = json.loads(res.data)
         
         self.assertEqual(res.status_code, 404)

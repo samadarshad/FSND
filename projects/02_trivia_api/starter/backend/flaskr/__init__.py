@@ -1,8 +1,5 @@
-import os
-from flask import Flask, json, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
-import random
 from sqlalchemy.sql.expression import func
 
 from models import setup_db, Question, Category
@@ -161,7 +158,7 @@ def create_app(test_config=None):
       "error": 404,
       "message": "Resource not found"
     }), 404
-    
+
   @app.errorhandler(405)
   def method_not_allowed(error):
     return jsonify({
