@@ -126,10 +126,15 @@ def create_app(test_config=None):
       abort(500)
 
   @app.route('/quizzes', methods=['POST'])
-  def post_question_to_quiz():
+  def post_question_to_quiz():    
     body = request.get_json()
-    previous_questions = body.get('previous_questions')
-    quiz_category = body.get('quiz_category')['id']
+    previous_questions = body.get('previous_questions', None)
+    quiz_category = body.get('quiz_category', None)
+    if quiz_category:
+      quiz_category = quiz_category['id']
+    else:
+      quiz_category = 0
+
     if (quiz_category == 0):
       query = Question.query
     else:
