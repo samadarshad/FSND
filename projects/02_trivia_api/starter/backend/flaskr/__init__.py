@@ -26,22 +26,13 @@ def create_app(test_config=None):
         return ("This is the backend page - "
                 "start the frontend and go to localhost:3000")
 
-    ITEMS_PER_PAGE = 10
-
-    def paginate_items(request, selection):
-        page = request.args.get('page', 1, type=int)
-        start = (page - 1) * ITEMS_PER_PAGE
-        end = start + ITEMS_PER_PAGE
-
-        items = [item.format() for item in selection]
-        current_items = items[start:end]
-
-        return current_items
-
     @app.route('/questions', methods=['GET'])
     def get_questions():
-        questions = Question.query.order_by(Question.id).all()
-        current_questions = paginate_items(request, questions)
+        page = request.args.get('page', 1, type=int)
+        questions = Question.query \
+            .order_by(Question.id) \
+            .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
+        current_questions = [q.format() for q in questions.items]
         if not current_questions:
             abort(404)
         try:
@@ -51,7 +42,7 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'questions': current_questions,
-                'total_questions': len(questions),
+                'total_questions': questions.total,
                 'categories': categories_formatted,
                 'current_category': None
             })
@@ -64,14 +55,16 @@ def create_app(test_config=None):
         searchTerm = body.get('searchTerm', None)
         if searchTerm:
             try:
+                page = request.args.get('page', 1, type=int)
                 questions = Question.query \
-                  .filter(Question.question.ilike('%{}%'.format(searchTerm))) \
-                  .order_by(Question.id).all()
-                current_questions = paginate_items(request, questions)
+                    .filter(Question.question.ilike('%{}%'.format(searchTerm))) \
+                    .order_by(Question.id) \
+                    .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
+                current_questions = [q.format() for q in questions.items]
                 return jsonify({
                     'success': True,
                     'questions': current_questions,
-                    'total_questions': len(questions),
+                    'total_questions': questions.total,
                     'current_category': None
                 })
             except Exception:
@@ -123,10 +116,12 @@ def create_app(test_config=None):
         if not category:
             abort(404)
         try:
+            page = request.args.get('page', 1, type=int)
             questions = Question.query \
-              .filter(Question.category == category.id) \
-              .order_by(Question.id).all()
-            current_questions = paginate_items(request, questions)
+                .filter(Question.category == category.id) \
+                .order_by(Question.id) \
+                .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
+            current_questions = [q.format() for q in questions.items]
             return jsonify({
                 'success': True,
                 'questions': current_questions,
