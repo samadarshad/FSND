@@ -3,6 +3,7 @@ from flask_cors import CORS
 from sqlalchemy.sql.expression import func
 import error_handlers
 from models import setup_db, Question, Category
+from flasgger import Swagger
 
 QUESTIONS_PER_PAGE = 10
 
@@ -13,6 +14,7 @@ def create_app(test_config=None):
     app.register_blueprint(error_handlers.blueprint)
     setup_db(app)
     CORS(app)
+    swagger = Swagger(app)
 
     @app.after_request
     def after_request(response):
@@ -28,26 +30,80 @@ def create_app(test_config=None):
 
     @app.route('/questions', methods=['GET'])
     def get_questions():
-        page = request.args.get('page', 1, type=int)
-        questions = Question.query \
-            .order_by(Question.id) \
-            .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
-        current_questions = [q.format() for q in questions.items]
-        if not current_questions:
-            abort(404)
-        try:
-            categories = Category.query.all()
-            categories_formatted = {category.id: category.type
-                                    for category in categories}
-            return jsonify({
-                'success': True,
-                'questions': current_questions,
-                'total_questions': questions.total,
-                'categories': categories_formatted,
-                'current_category': None
-            })
-        except Exception:
-            abort(500)
+      """Returns a list of categories, current_category, question objects, success value, and total number of questions
+      Results are paginated in groups of 10.
+    ---
+    parameters:
+      - name: page
+        in: query
+        type: integer
+        required: False
+        default: 1
+    definitions:
+      Question:
+        type: object
+        properties:
+          question:
+            type: string
+          answer:
+            type: string
+          category:
+            type: integer
+            $ref: '#/definitions/Category/properties/id'
+          difficulty:
+            type: integer
+            description: 1 easiest, 5 hardest
+      Category:
+        type: object
+        properties:
+          id:
+            type: integer
+          type:
+            type: string
+    responses:
+      200:
+        description: A list of categories, current_category, question objects, success value, and total number of questions
+        schema:
+          properties:
+            categories:
+              type: object
+              additionalProperties:
+                $ref: '#/definitions/Category/properties/type'
+            current_category:
+              type: integer
+            questions:
+              type: array
+              items:
+                $ref: '#/definitions/Question'
+            total_questions:
+              type: integer
+            success:
+              type: boolean
+      404:
+        description: No questions found at given page
+      500:
+        description: Internal server error 
+    """
+      page = request.args.get('page', 1, type=int)
+      questions = Question.query \
+          .order_by(Question.id) \
+          .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
+      current_questions = [q.format() for q in questions.items]
+      if not current_questions:
+          abort(404)
+      try:
+          categories = Category.query.all()
+          categories_formatted = {category.id: category.type
+                                  for category in categories}
+          return jsonify({
+              'success': True,
+              'questions': current_questions,
+              'total_questions': questions.total,
+              'categories': categories_formatted,
+              'current_category': None
+          })
+      except Exception:
+          abort(500)
 
     @app.route('/questions', methods=['POST'])
     def add_or_search_question():
