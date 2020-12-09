@@ -120,8 +120,8 @@ def create_app(test_config=None):
             questions = Question.query \
                 .filter(Question.category == category.id) \
                 .order_by(Question.id) \
-                .paginate(page, QUESTIONS_PER_PAGE, error_out=False)
-            current_questions = [q.format() for q in questions.items]
+                .all()
+            current_questions = [q.format() for q in questions]
             return jsonify({
                 'success': True,
                 'questions': current_questions,
