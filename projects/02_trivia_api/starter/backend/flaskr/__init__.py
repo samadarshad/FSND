@@ -1,7 +1,7 @@
 from flask import Flask, request, abort, jsonify
 from flask_cors import CORS
 from sqlalchemy.sql.expression import func
-
+import error_handlers
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
@@ -10,6 +10,7 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    app.register_blueprint(error_handlers.blueprint)
     setup_db(app)
     CORS(app)
 
@@ -156,45 +157,5 @@ def create_app(test_config=None):
             'success': True,
             'question': question.format()
         })
-
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({
-            "success": False,
-            "error": 400,
-            "message": "Bad request"
-        }), 400
-
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({
-            "success": False,
-            "error": 404,
-            "message": "Resource not found"
-        }), 404
-
-    @app.errorhandler(405)
-    def method_not_allowed(error):
-        return jsonify({
-            "success": False,
-            "error": 405,
-            "message": "Method not allowed"
-        }), 405
-
-    @app.errorhandler(422)
-    def unprocessible_entity(error):
-        return jsonify({
-            "success": False,
-            "error": 422,
-            "message": "Unprocessible entity"
-        }), 422
-
-    @app.errorhandler(500)
-    def internal_server_error(error):
-        return jsonify({
-            "success": False,
-            "error": 500,
-            "message": "Internal server error"
-        }), 500
 
     return app
