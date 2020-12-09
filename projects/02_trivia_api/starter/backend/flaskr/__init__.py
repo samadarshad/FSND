@@ -30,7 +30,8 @@ def create_app(test_config=None):
 
     @app.route('/questions', methods=['GET'])
     def get_questions():
-      """Returns a list of categories, current_category, question objects, success value, and total number of questions
+      """Get questions
+      Returns a list of categories, current_category, question objects, success value, and total number of questions
       Results are paginated in groups of 10.
     ---
     parameters:
@@ -190,6 +191,24 @@ def create_app(test_config=None):
 
     @app.route('/questions/<id>', methods=['DELETE'])
     def delete_question(id):
+        """Delete a question.
+    Deletes the question of the given ID if it exists. Returns success value.
+    ---
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: True      
+    responses:
+      200:
+        description: Delete successful
+        schema:
+          properties: 
+            success:
+              type: boolean
+      422:
+        description: Unprocessible entity - couldn't find the question to delete
+    """
         question = Question.query.get(id)
         try:
             question.delete()
@@ -201,6 +220,23 @@ def create_app(test_config=None):
 
     @app.route('/categories', methods=['GET'])
     def get_categories():
+        """Returns a list of categories
+    Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+    ---
+    responses:
+      200:
+        description: An object with a single key, categories, that contains a object of `id:category_string` key-value pairs, and success value.
+        schema:
+          properties:
+            categories:
+              type: object
+              additionalProperties:
+                $ref: '#/definitions/Category/properties/type'
+            success:
+              type: boolean
+      500:
+        description: Internal server error 
+    """
         try:
             categories = Category.query.all()
             categories_formatted = {category.id: category.type
@@ -214,6 +250,38 @@ def create_app(test_config=None):
 
     @app.route('/categories/<id>/questions', methods=['GET'])
     def get_questions_by_category(id):
+        """Returns a list of questions by the given category
+    Fetches a list of question objects which belong in a category of given ID
+    ---
+    parameters:
+      - name: page
+        in: query
+        type: integer
+        required: False
+        default: 1
+      - name: id
+        in: path
+        type: integer
+        required: True
+        example: 1
+    responses:
+      200:
+        description: An object with a the current category ID, a list of question objects, and success value.
+        schema:
+          properties:            
+            current_category:
+              type: integer
+            questions:
+              type: array
+              items:
+                $ref: '#/definitions/Question'
+            success:
+              type: boolean
+      404:
+        description: Category not found
+      500:
+        description: Internal server error 
+    """
         category = Category.query.get(id)
         if not category:
             abort(404)
@@ -234,6 +302,40 @@ def create_app(test_config=None):
 
     @app.route('/quizzes', methods=['POST'])
     def post_question_to_quiz():
+        """Returns a list of questions by the given category
+    Fetches a random question from a given category that is not in the list of previous questions. Use `"quiz_category":{"id":0}` or `"quiz_category":""` for ALL categories.
+    ---
+    parameters:
+      - name: request
+        in: body
+        type: string
+        required: False
+        schema:
+          type: object
+          properties:
+            quiz_category:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+            previous_questions:
+              type: array
+              items:
+                type: integer
+                example: 21
+    responses:
+      200:
+        description: A question object and success value.
+        schema:
+          properties:
+            question:
+              $ref: '#/definitions/Question'
+            success:
+              type: boolean
+      404:
+        description: Question not found
+    """    
         body = request.get_json()
         previous_questions = body.get('previous_questions', None)
         quiz_category = body.get('quiz_category', None)
