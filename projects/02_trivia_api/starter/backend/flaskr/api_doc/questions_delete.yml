@@ -1,0 +1,18 @@
+Delete a question.
+  Deletes the question of the given ID if it exists.
+  ---
+  parameters:
+    - name: id
+      in: path
+      type: integer
+      required: True
+  responses:
+    200:
+      description: Delete successful
+      schema:
+        properties:
+          success:
+            type: boolean
+    422:
+      description: Unprocessible entity -
+        couldn't find the question to delete

@@ -1,0 +1,34 @@
+Returns a list of questions by the given category
+  Fetches a random question from a given category that is not in the list of previous questions.
+  Use `"quiz_category":{"id":0}` or `"quiz_category":""` for ALL categories.
+  ---
+  parameters:
+    - name: request
+      in: body
+      type: string
+      required: False
+      schema:
+        type: object
+        properties:
+          quiz_category:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+          previous_questions:
+            type: array
+            items:
+              type: integer
+              example: 21
+  responses:
+    200:
+      description: A question object and success value.
+      schema:
+        properties:
+          question:
+            $ref: '#/definitions/Question'
+          success:
+            type: boolean
+    404:
+      description: Question not found

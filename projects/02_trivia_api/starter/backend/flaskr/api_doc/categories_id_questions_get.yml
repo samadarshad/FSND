@@ -1,0 +1,32 @@
+Returns a list of questions by the given category
+  Fetches a list of question objects which belong in a category of given ID
+  ---
+  parameters:
+    - name: page
+      in: query
+      type: integer
+      required: False
+      default: 1
+    - name: id
+      in: path
+      type: integer
+      required: True
+      example: 1
+  responses:
+    200:
+      description: An object with a the current category ID,
+        a list of question objects, and success value.
+      schema:
+        properties:
+          current_category:
+            type: integer
+          questions:
+            type: array
+            items:
+              $ref: '#/definitions/Question'
+          success:
+            type: boolean
+    404:
+      description: Category not found
+    500:
+      description: Internal server error
