@@ -107,6 +107,52 @@ def create_app(test_config=None):
 
     @app.route('/questions', methods=['POST'])
     def add_or_search_question():
+        """Add or Search a question.
+    If 'searchTerm' is in request body, then it is a paginated search. Otherwise it is an add.
+    ---
+    parameters:
+      - name: page
+        in: query
+        type: integer
+        required: False
+        default: 1
+      - name: request
+        in: body
+        type: string
+        required: False
+        schema:
+          type: object
+          properties:
+            searchTerm:
+              type: string
+            question:
+              type: string
+          example:
+            searchTerm: title
+            question: new question
+            answer: new answer
+            difficulty: 4
+            category: 2
+    responses:
+      200:
+        description: For search response - Returns a list of question objects that include the search term in its title, current_category, success value, and total number of questions found. For add response, just returns success value.
+        schema:
+          properties:            
+            current_category:
+              type: integer
+            questions:
+              type: array
+              items:
+                $ref: '#/definitions/Question'
+            total_questions:
+              type: integer
+            success:
+              type: boolean
+      400:
+        description: Bad request when adding a new question
+      500:
+        description: Internal server error
+    """
         body = request.get_json()
         searchTerm = body.get('searchTerm', None)
         if searchTerm:
