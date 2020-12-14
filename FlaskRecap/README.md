@@ -7,7 +7,8 @@ A simple flask server to demonstrate basic flask.
 ### Create a Virutal Enviornment
 
 Follow instructions [here](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/) to create and activate virtual enviornment for this project.
-
+ python -m virtualenv env --always-copy
+ source env/bin/activate
 ### Install Dependencies
 
 Run `pip install -r requirements.txt` to install any dependencies.

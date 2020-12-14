@@ -35,6 +35,9 @@ From within this directory first ensure you are working using your created virtu
 Each time you open a new terminal session, run:
 
 ```bash
+
+sudo lsof -t -i tcp:5000 | sudo xargs kill -9
+source env/bin/activate
 export FLASK_APP=app.py;
 ```
 
