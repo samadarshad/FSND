@@ -72,6 +72,16 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks-detail')
+@cross_origin()
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(jwt):
+    drinks = Drink.query.all()
+    drinks = [d.long() for d in drinks]
+    return jsonify({
+        'success': True,
+        'drinks': drinks
+    }), 200
 
 
 '''
@@ -83,7 +93,23 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks', methods=['POST'])
+@cross_origin()
+@requires_auth('post:drinks')
+def post_drinks(jwt):
+    body = request.get_json()
+    recipe = body.get('recipe', None)
+    title = body.get('title', None)
+    print(recipe)
+    print(title)
 
+    #TODO get request properly and insert into db
+    drinks = Drink.query.all()
+    drinks = [d.long() for d in drinks]
+    return jsonify({
+        'success': True,
+        'drinks': drinks
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -96,7 +122,29 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<id>', methods=['PATCH'])
+@cross_origin()
+@requires_auth('patch:drinks')
+def patch_drinks(jwt, id):
+    body = request.get_json()
+    recipe = body.get('recipe', None)
+    title = body.get('title', None)
+    print(recipe)
+    print(title)
+    drink = Drink.query.get(id)
+    if title:
+        drink.title = title
+    if recipe:
+        drink.recipe = recipe
 
+    drink.update()
+    #TODO get request properly and insert into db
+    # drink = Drink.query.get(id).long()
+    # drinks = [d.long() for d in drinks]
+    return jsonify({
+        'success': True,
+        'drinks': [Drink.query.get(id).long()]
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -108,7 +156,15 @@ def get_drinks():
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-
+@app.route('/drinks/<id>', methods=['DELETE'])
+@cross_origin()
+@requires_auth('delete:drinks')
+def delete_drinks(id, jwt):  
+    #TODO delete properly
+    return jsonify({
+        'success': True,
+        'delete': id
+    }), 200
 
 ## Error Handling
 '''
