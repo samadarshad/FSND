@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
@@ -10,7 +10,7 @@ from .auth.auth import AuthError, requires_auth
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
-
+app.config['CORS_HEADERS'] = 'Content-Type'
 '''
 @TODO uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
@@ -21,6 +21,29 @@ CORS(app)
 @app.route('/')
 def index():
     return "hello"
+
+@app.route('/test_drop')
+def test_drop_all():
+    db_drop_and_create_all()
+    return "reset"
+    
+@app.route('/test_add')
+def test_add_drinks():
+    req_title = 'drink1'
+    req_recipe = [{"color": "blue", "name": "abc", "parts": 1}]
+    drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
+    drink.insert()
+
+    req_title = 'drink2'
+    req_recipe = [{"color": "blue", "name": "abc", "parts": 1}]
+    drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
+    drink.insert()
+
+    req_title = 'drink3'
+    req_recipe = [{"color": "green", "name": "abc", "parts": 1}]
+    drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
+    drink.insert()
+    return "added"
 ## ROUTES
 '''
 @TODO implement endpoint
@@ -30,6 +53,15 @@ def index():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks')
+@cross_origin()
+def get_drinks():
+    drinks = Drink.query.all()
+    drinks = [d.short() for d in drinks]
+    return jsonify({
+        'success': True,
+        'drinks': drinks
+    }), 200
 
 
 '''
