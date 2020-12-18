@@ -19,15 +19,18 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 '''
 # db_drop_and_create_all()
 
+
 @app.route('/')
 def index():
     return "hello"
+
 
 @app.route('/test_drop')
 def test_drop_all():
     db_drop_and_create_all()
     return "reset"
-    
+
+
 @app.route('/test_add')
 def test_add_drinks():
     req_title = 'drink1'
@@ -45,7 +48,8 @@ def test_add_drinks():
     drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
     drink.insert()
     return "added"
-## ROUTES
+# ROUTES
+
 
 @app.route('/drinks')
 @cross_origin()
@@ -57,6 +61,7 @@ def get_drinks():
         'drinks': drinks
     }), 200
 
+
 @app.route('/drinks-detail')
 @cross_origin()
 @requires_auth('get:drinks-detail')
@@ -67,6 +72,7 @@ def get_drinks_detail(jwt):
         'success': True,
         'drinks': drinks
     }), 200
+
 
 @app.route('/drinks', methods=['POST'])
 @cross_origin()
@@ -89,6 +95,7 @@ def post_drinks(jwt):
         'drinks': [drink.long()]
     }), 200
 
+
 @app.route('/drinks/<id>', methods=['PATCH'])
 @cross_origin()
 @requires_auth('patch:drinks')
@@ -106,25 +113,25 @@ def patch_drinks(jwt, id):
     try:
         drink.update()
     except Exception:
-        abort(422)    
+        abort(422)
     return jsonify({
         'success': True,
         'drinks': [Drink.query.get(id).long()]
     }), 200
 
+
 @app.route('/drinks/<id>', methods=['DELETE'])
 @cross_origin()
 @requires_auth('delete:drinks')
-def delete_drinks(jwt, id): 
+def delete_drinks(jwt, id):
     drink = Drink.query.get(id)
     if not drink:
         abort(404)
     try:
         drink.delete()
     except Exception:
-        abort(422)    
+        abort(422)
     return jsonify({
         'success': True,
         'delete': id
     }), 200
-

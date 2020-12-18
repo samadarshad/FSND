@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 
 blueprint = Blueprint('error_handlers', __name__)
 
+
 @blueprint.app_errorhandler(400)
 def bad_request(error):
     return jsonify({
@@ -9,6 +10,7 @@ def bad_request(error):
         "error": 400,
         "message": "Bad request"
     }), 400
+
 
 @blueprint.app_errorhandler(401)
 def unauthorized(error):
@@ -18,6 +20,7 @@ def unauthorized(error):
         "message": "Unauthorized"
     }), 401
 
+
 @blueprint.app_errorhandler(403)
 def forbidden(error):
     return jsonify({
@@ -25,6 +28,7 @@ def forbidden(error):
         "error": 403,
         "message": "Forbidden"
     }), 403
+
 
 @blueprint.app_errorhandler(404)
 def not_found(error):
