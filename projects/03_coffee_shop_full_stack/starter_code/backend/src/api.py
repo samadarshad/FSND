@@ -3,11 +3,12 @@ from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
 from flask_cors import CORS, cross_origin
-
+from . import error_handlers
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
 
 app = Flask(__name__)
+app.register_blueprint(error_handlers.blueprint)
 setup_db(app)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -45,14 +46,7 @@ def test_add_drinks():
     drink.insert()
     return "added"
 ## ROUTES
-'''
-@TODO implement endpoint
-    GET /drinks
-        it should be a public endpoint
-        it should contain only the drink.short() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
+
 @app.route('/drinks')
 @cross_origin()
 def get_drinks():
@@ -63,15 +57,6 @@ def get_drinks():
         'drinks': drinks
     }), 200
 
-
-'''
-@TODO implement endpoint
-    GET /drinks-detail
-        it should require the 'get:drinks-detail' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
 @app.route('/drinks-detail')
 @cross_origin()
 @requires_auth('get:drinks-detail')
@@ -83,45 +68,27 @@ def get_drinks_detail(jwt):
         'drinks': drinks
     }), 200
 
-
-'''
-@TODO implement endpoint
-    POST /drinks
-        it should create a new row in the drinks table
-        it should require the 'post:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
-        or appropriate status code indicating reason for failure
-'''
 @app.route('/drinks', methods=['POST'])
 @cross_origin()
 @requires_auth('post:drinks')
 def post_drinks(jwt):
     body = request.get_json()
-    recipe = body.get('recipe', None)
+    recipe = body.get('recipe', [])
     title = body.get('title', None)
-    print(recipe)
-    print(title)
-
-    #TODO get request properly and insert into db
-    drinks = Drink.query.all()
-    drinks = [d.long() for d in drinks]
+    if not title or not recipe:
+        abort(400)
+    if type(recipe) != list:
+        recipe = [recipe]
+    drink = Drink(title=title, recipe=json.dumps(recipe))
+    try:
+        drink.insert()
+    except Exception:
+        abort(422)
     return jsonify({
         'success': True,
-        'drinks': drinks
+        'drinks': [drink.long()]
     }), 200
 
-'''
-@TODO implement endpoint
-    PATCH /drinks/<id>
-        where <id> is the existing model id
-        it should respond with a 404 error if <id> is not found
-        it should update the corresponding row for <id>
-        it should require the 'patch:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
-        or appropriate status code indicating reason for failure
-'''
 @app.route('/drinks/<id>', methods=['PATCH'])
 @cross_origin()
 @requires_auth('patch:drinks')
@@ -129,73 +96,35 @@ def patch_drinks(jwt, id):
     body = request.get_json()
     recipe = body.get('recipe', None)
     title = body.get('title', None)
-    print(recipe)
-    print(title)
     drink = Drink.query.get(id)
+    if not drink:
+        abort(404)
     if title:
         drink.title = title
     if recipe:
-        drink.recipe = recipe
-
-    drink.update()
-    #TODO get request properly and insert into db
-    # drink = Drink.query.get(id).long()
-    # drinks = [d.long() for d in drinks]
+        drink.recipe = json.dumps(recipe)
+    try:
+        drink.update()
+    except Exception:
+        abort(422)    
     return jsonify({
         'success': True,
         'drinks': [Drink.query.get(id).long()]
     }), 200
 
-'''
-@TODO implement endpoint
-    DELETE /drinks/<id>
-        where <id> is the existing model id
-        it should respond with a 404 error if <id> is not found
-        it should delete the corresponding row for <id>
-        it should require the 'delete:drinks' permission
-    returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
-        or appropriate status code indicating reason for failure
-'''
 @app.route('/drinks/<id>', methods=['DELETE'])
 @cross_origin()
 @requires_auth('delete:drinks')
-def delete_drinks(id, jwt):  
-    #TODO delete properly
+def delete_drinks(jwt, id): 
+    drink = Drink.query.get(id)
+    if not drink:
+        abort(404)
+    try:
+        drink.delete()
+    except Exception:
+        abort(422)    
     return jsonify({
         'success': True,
         'delete': id
     }), 200
 
-## Error Handling
-'''
-Example error handling for unprocessable entity
-'''
-@app.errorhandler(422)
-def unprocessable(error):
-    return jsonify({
-                    "success": False, 
-                    "error": 422,
-                    "message": "unprocessable"
-                    }), 422
-
-'''
-@TODO implement error handlers using the @app.errorhandler(error) decorator
-    each error handler should return (with approprate messages):
-             jsonify({
-                    "success": False, 
-                    "error": 404,
-                    "message": "resource not found"
-                    }), 404
-
-'''
-
-'''
-@TODO implement error handler for 404
-    error handler should conform to general task above 
-'''
-
-
-'''
-@TODO implement error handler for AuthError
-    error handler should conform to general task above 
-'''
