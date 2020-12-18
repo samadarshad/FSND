@@ -1,0 +1,9 @@
+Note - tokens expire in 1 day
+REMEMBER: login using in-private window, otherwise you'll stay stuck in one account
+http://127.0.0.1:8100/tabs/drink-menu
+
+barista@abdus-samad-coffee-shop.com
+0xT3s1aY5vQmyU
+
+manager@abdus-samad-coffee-shop.com
+0xT3s1aY5vQmyU

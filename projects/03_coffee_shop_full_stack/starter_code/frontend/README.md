@@ -18,9 +18,19 @@ The Ionic Command Line Interface is required to serve and build the frontend. In
 
 This project uses NPM to manage software dependencies. NPM Relies on the package.json file located in the `frontend` directory of this repository. After cloning, open your terminal and run:
 
+node version 14
+nvm alias default 14
+nvm use default
+sudo npm cache clean --force
+open vbox in admin mode
+sudo ln -sf ~/fsnd/3/node_modules .
 ```bash
-npm install
+sudo npm install
+sudo npm install --unsafe-perm node-sass 
+npm start
+just re-save the file app.module.ts and it will compile 
 ```
+http://localhost:8100/tabs/drink-menu
 
 >_tip_: **npm i** is shorthand for **npm install**
 
@@ -36,6 +46,7 @@ Ionic uses a configuration file to manage environment variables. These variables
 
 Ionic ships with a useful development server which detects changes and transpiles as you work. The application is then accessible through the browser on a localhost port. To run the development server, cd into the `frontend` directory and run:
 
+DONT DO THIS, ITS BROKEN - I'm not going to be changing the frontend so rapidly anyway so I dont need the fast changes - I'll just restart the server when I need to.
 ```bash
 ionic serve
 ```

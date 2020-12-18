@@ -37,7 +37,12 @@ From within the `./src` directory first ensure you are working using your create
 Each time you open a new terminal session, run:
 
 ```bash
+cd backend
+source env/bin/activate
+cd src
+sudo lsof -t -i tcp:5000 | sudo xargs kill -9
 export FLASK_APP=api.py;
+flask run --reload
 ```
 
 To run the server, execute:
