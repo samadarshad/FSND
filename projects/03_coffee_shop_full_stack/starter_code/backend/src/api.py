@@ -22,7 +22,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
 def index():
-    return "hello"
+    return "visit /test_drop to clear the database, and /test_add to add mock data"
 
 
 @app.route('/test_drop')
@@ -48,7 +48,6 @@ def test_add_drinks():
     drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
     drink.insert()
     return "added"
-# ROUTES
 
 
 @app.route('/drinks')
