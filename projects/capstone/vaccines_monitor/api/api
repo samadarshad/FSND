@@ -3,7 +3,7 @@ info:
   version: '1'
   title: vaccines-monitor
 servers:
-  - url: 'https://vaccines-monitor-samad-fsnd.herokuapp.com/'
+  - url: 'https://vaccines-monitor-samad-fsnd.herokuapp.com'
 paths:
   /user:
     get:
