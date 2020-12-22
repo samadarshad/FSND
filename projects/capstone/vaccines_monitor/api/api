@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
-  version: 1
+  version: '1'
   title: vaccines-monitor
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'https://vaccines-monitor-samad-fsnd.herokuapp.com/'
 paths:
   /user:
     get:
@@ -37,6 +37,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /:
+    get:
+      summary: 'index'
+      responses:
+        '200':
+          description: 'should say hello'
+
+
+
 components:
   schemas:
     User:
