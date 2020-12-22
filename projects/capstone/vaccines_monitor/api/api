@@ -42,7 +42,7 @@ paths:
       summary: 'index'
       responses:
         '200':
-          description: 'should say hello'
+          description: 'should say hello!!!'
   /coolkids:
     get:
       summary: 'cool kids'
