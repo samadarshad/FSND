@@ -12,3 +12,7 @@ mgmt_api_token = token['access_token']
 
 
 auth0 = Auth0(domain, mgmt_api_token)
+# ret = auth0.users.create({"email":"john.doe_using_python3@gmail.com","connection":"Username-Password-Authentication","password":"secret"})
+# print(ret['user_id'])
+
+

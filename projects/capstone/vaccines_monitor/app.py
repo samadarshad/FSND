@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from models import setup_db
 
@@ -60,6 +60,18 @@ def create_app(test_config=None):
     return app
 
 app = create_app()
+
+# Error handler
+class AuthError(Exception):
+    def __init__(self, error, status_code):
+        self.error = error
+        self.status_code = status_code
+
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
