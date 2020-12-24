@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, create_engine, Integer
+from sqlalchemy import Column, String, create_engine, Integer, relationship, Boolean, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -19,7 +19,34 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
 
+class Patient(db.Model):
+  __tablename__ = 'patients'
 
+  id = Column(Integer, primary_key=True)
+  user_id = Column(String, nullable=False) # foreign key to Auth0 database
+  
+  name = Column(String)
+  age = Column(Integer)
+  had_covid = Column(Boolean)
+  tests = relationship('Test', backref=__tablename__, lazy='dynamic')
+
+class Vaccine(db.Model):
+  __tablename__ = 'vaccines'
+
+  id = Column(Integer, primary_key=True)
+
+  name = Column(String)
+  tests = relationship('Test', backref=__tablename__, lazy='dynamic')
+
+
+class Test(db.Model):
+  __tablename__ = 'tests'
+
+  id = Column(Integer, primary_key=True)
+  effective = Column(Boolean)
+  patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+  vaccine_id = Column(Integer, ForeignKey('vaccines.id'), nullable=False)
+ 
 '''
 Person
 Have title and release year
