@@ -4,6 +4,7 @@ from auth import requires_auth
 import patient_user_management
 import os
 import config
+from util import *
 
 patient_api = Blueprint('patient_api', __name__)
 
@@ -32,11 +33,16 @@ def createPatient():
         'password': password
     })
 
-email_prefix = os.getenv('PATIENT_EMAIL_PREFIX')
-email_suffix = os.getenv('PATIENT_EMAIL_SUFFIX')
-patient_password = os.getenv('PATIENT_PASSWORD')
-def formEmail(id):
-    return email_prefix + str(id) + email_suffix
-
-def formPassword():
-    return patient_password
+@patient_api.route('/<id>', methods=['DELETE'])
+def deletePatient(id):
+    patient = Patient.query.get(id)
+    if not patient:
+        abort(404)
+    try:
+        patient_user_management.deletePatientUser(patient.user_id)
+        patient.delete()
+        return jsonify({
+        'success': True
+        })
+    except Exception:
+        abort(422)
