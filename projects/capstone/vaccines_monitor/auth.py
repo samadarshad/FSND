@@ -6,10 +6,9 @@ from urllib.request import urlopen
 import os
 import config
 
-# AUTH0_DOMAIN = 'abdus-samad-fsnd.eu.auth0.com'
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'coffee'
+ALGORITHMS = os.getenv('ALGORITHMS')
+API_AUDIENCE = os.getenv('API_AUDIENCE')
 
 
 class AuthError(Exception):
