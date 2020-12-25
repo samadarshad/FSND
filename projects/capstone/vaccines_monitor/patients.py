@@ -9,7 +9,7 @@ from util import *
 patient_api = Blueprint('patient_api', __name__)
 
 # @requires_auth('create:patient')
-@patient_api.route('/', methods=['POST'])
+@patient_api.route('', methods=['POST'])
 def createPatient():
     body = request.get_json()
     name = body.get('name', None)
@@ -33,6 +33,7 @@ def createPatient():
         'password': password
     })
 
+# @requires_auth('delete:patient')
 @patient_api.route('/<id>', methods=['DELETE'])
 def deletePatient(id):
     patient = Patient.query.get(id)
