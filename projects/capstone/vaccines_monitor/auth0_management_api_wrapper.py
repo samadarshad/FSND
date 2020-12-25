@@ -36,3 +36,6 @@ class Auth0ManagementApiWrapper:
             print("success")
         else:
             print("failed to add!")
+
+    def getUser(self, user_id):
+        self.auth0.users.get(user_id)

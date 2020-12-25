@@ -18,3 +18,6 @@ def createPatientUser(email, password):
 def deletePatientUser(user_id):
     auth0.deleteUser(user_id)
 
+def getPatientUser(user_id):
+    auth0.getUser(user_id)
+
