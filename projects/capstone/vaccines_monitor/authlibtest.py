@@ -15,4 +15,7 @@ auth0 = Auth0(domain, mgmt_api_token)
 # ret = auth0.users.create({"email":"john.doe_using_python3@gmail.com","connection":"Username-Password-Authentication","password":"secret"})
 # print(ret['user_id'])
 
-
+#auth0.roles.add_users('rol_YSs1AgfNjAV5FHss', ['auth0|5fe4ebd1b2ac50006f71ca4b'])
+# confirm the role has been added
+# ret = auth0.users.list_roles('auth0|5fe4ebd1b2ac50006f71ca4b')
+# check 'rol_YSs1AgfNjAV5FHss' is  ret['roles'][0]['id']s

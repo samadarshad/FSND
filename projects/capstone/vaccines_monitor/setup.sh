@@ -1,2 +1,2 @@
-DATABASE_URL="postgres://postgres:postgres@localhost:5432/medicalrecords"
-EXCITED=false
+export DATABASE_URL="postgres://postgres:postgres@localhost:5432/medicalrecords"
+export EXCITED=false

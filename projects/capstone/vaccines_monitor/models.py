@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, create_engine, Integer, relationship, Boolean, ForeignKey
+from sqlalchemy import Column, String, create_engine, Integer, Boolean, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -28,7 +28,7 @@ class Patient(db.Model):
   name = Column(String)
   age = Column(Integer)
   had_covid = Column(Boolean)
-  tests = relationship('Test', backref=__tablename__, lazy='dynamic')
+  tests = db.relationship('Test', backref=__tablename__, lazy='dynamic')
 
 class Vaccine(db.Model):
   __tablename__ = 'vaccines'
@@ -36,7 +36,7 @@ class Vaccine(db.Model):
   id = Column(Integer, primary_key=True)
 
   name = Column(String)
-  tests = relationship('Test', backref=__tablename__, lazy='dynamic')
+  tests = db.relationship('Test', backref=__tablename__, lazy='dynamic')
 
 
 class Test(db.Model):
