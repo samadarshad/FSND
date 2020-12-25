@@ -4,6 +4,7 @@ from flask_cors import CORS
 from models import setup_db
 import error_handlers
 from auth import requires_auth
+import config
 
 # def create_app(test_config=None):
 
@@ -14,7 +15,7 @@ CORS(app)
 
 @app.route('/')
 def get_greeting():
-    excited = os.environ['EXCITED']
+    excited = os.getenv('EXCITED')
     greeting = "Hello" 
     if excited == 'true': greeting = greeting + "!! !!!"
     return greeting
