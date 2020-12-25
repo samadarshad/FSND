@@ -12,22 +12,15 @@ patient_api = Blueprint('patient_api', __name__)
 def createPatient():
     body = request.get_json()
     name = body.get('name', None)
-    age = int(body.get('age', None))
-    had_covid = body.get('had_covid', None) == 'True'
-    print(name, age, had_covid)
+    age = body.get('age', None)
+    had_covid = body.get('had_covid', None)
     
     new_patient = Patient(user_id=None, name=name, age=age, had_covid=had_covid)
-    print(new_patient.format())
     try:
         new_patient.insert()
-        print("2")
         email = formEmail(new_patient.id)
-        print("3")
         password = formPassword()
-        print(email)
-        print(password)
         user_id = patient_user_management.createPatientUser(email, password)
-        print(user_id)
         new_patient.user_id = user_id
         new_patient.update()
         print(new_patient.format())
