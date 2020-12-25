@@ -8,9 +8,10 @@ from util import *
 
 patient_api = Blueprint('patient_api', __name__)
 
-# @requires_auth('create:patient')
+
 @patient_api.route('', methods=['POST'])
-def createPatient():
+@requires_auth('create:patient')
+def createPatient(jwt):
     body = request.get_json()
     name = body.get('name', None)
     age = body.get('age', None)
