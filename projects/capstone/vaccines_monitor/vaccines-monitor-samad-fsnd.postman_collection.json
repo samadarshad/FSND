@@ -12,7 +12,7 @@
 					"name": "401 Unauthenticated",
 					"item": [
 						{
-							"name": "/vaccines-research",
+							"name": "/research",
 							"event": [
 								{
 									"listen": "test",
@@ -30,12 +30,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/vaccines-research",
+									"raw": "{{baseUrl}}/research",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"vaccines-research"
+										"research"
 									]
 								}
 							},
@@ -252,36 +252,6 @@
 									"path": [
 										"vaccines",
 										"1"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "/patients-research",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients-research",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients-research"
 									]
 								}
 							},
@@ -417,6 +387,107 @@
 			"name": "patient1",
 			"item": [
 				{
+					"name": "Get Auth0 Token",
+					"item": [
+						{
+							"name": "Get patient JWT",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"username = pm.collectionVariables.get('patient1_username')\r",
+											"password = pm.collectionVariables.get('patient1_password')\r",
+											"\r",
+											"pm.environment.set('username', username)\r",
+											"pm.environment.set('password', password)\r",
+											"\r",
+											"const echoPostRequest = {\r",
+											"  url: 'https://' + pm.collectionVariables.get('auth0_url') + '.auth0.com/oauth/token',\r",
+											"  method: 'POST',\r",
+											"  header: 'Content-Type:application/json',\r",
+											"  body: {\r",
+											"    mode: 'application/json',\r",
+											"    raw: JSON.stringify(\r",
+											"        {\r",
+											"        \tclient_id: pm.collectionVariables.get('auth0_client_id'),\r",
+											"        \tclient_secret: pm.collectionVariables.get('auth0_client_secret'),\r",
+											"        \taudience: pm.collectionVariables.get('auth0_audience'),\r",
+											"        \tgrant_type:'password',\r",
+											"            username: pm.environment.get('username'),\r",
+											"            password: pm.environment.get('password')\r",
+											"        })\r",
+											"  }\r",
+											"};\r",
+											"\r",
+											"var getToken = true;\r",
+											"\r",
+											"if (!pm.environment.get('accessTokenExpiry') || \r",
+											"    !pm.environment.get('currentAccessToken')) {\r",
+											"    console.log('Token or expiry date are missing')\r",
+											"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {\r",
+											"    console.log('Token is expired')\r",
+											"} else {\r",
+											"    getToken = false;\r",
+											"    console.log('Token and expiry date are all good');\r",
+											"}\r",
+											"\r",
+											"if (getToken === true) {\r",
+											"    pm.sendRequest(echoPostRequest, function (err, res) {\r",
+											"    console.log(err ? err : res.json());\r",
+											"        if (err === null) {\r",
+											"            console.log('Saving the token and expiry date')\r",
+											"            var responseJson = res.json();\r",
+											"            pm.environment.set('currentAccessToken', responseJson.access_token)\r",
+											"    \r",
+											"            var expiryDate = new Date();\r",
+											"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);\r",
+											"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());\r",
+											"        }\r",
+											"    });\r",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "example.com",
+									"host": [
+										"example",
+										"com"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "403 Forbidden",
 					"item": [
 						{
@@ -481,37 +552,6 @@
 							"response": []
 						},
 						{
-							"name": "/patients/2",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients/2",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients",
-										"2"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "/patients/1",
 							"event": [
 								{
@@ -605,7 +645,7 @@
 							"response": []
 						},
 						{
-							"name": "/vaccines-research",
+							"name": "/research",
 							"event": [
 								{
 									"listen": "test",
@@ -623,19 +663,54 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/vaccines-research",
+									"raw": "{{baseUrl}}/research",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"vaccines-research"
+										"research"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "/patients-research",
+							"name": "/patients",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "patient1 cant access other patient's info",
+					"item": [
+						{
+							"name": "/patients/2",
 							"event": [
 								{
 									"listen": "test",
@@ -653,12 +728,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/patients-research",
+									"raw": "{{baseUrl}}/patients/2",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"patients-research"
+										"patients",
+										"2"
 									]
 								}
 							},
@@ -752,36 +828,6 @@
 									"path": [
 										"patients",
 										"2"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "/patients",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients"
 									]
 								}
 							},
@@ -1563,7 +1609,7 @@
 					"name": "403 Forbidden",
 					"item": [
 						{
-							"name": "/vaccines-research",
+							"name": "/research",
 							"event": [
 								{
 									"listen": "test",
@@ -1581,42 +1627,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/vaccines-research",
+									"raw": "{{baseUrl}}/research",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
-										"vaccines-research"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "/patients-research",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients-research",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients-research"
+										"research"
 									]
 								}
 							},
@@ -1797,12 +1813,22 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/patients",
+							"raw": "{{baseUrl}}/patients?page=1&items_per_page=10",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"patients"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "items_per_page",
+									"value": "10"
+								}
 							]
 						}
 					},
@@ -2360,7 +2386,7 @@
 					"response": []
 				},
 				{
-					"name": "/vaccines-research",
+					"name": "/research",
 					"event": [
 						{
 							"listen": "test",
@@ -2378,42 +2404,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/vaccines-research",
+							"raw": "{{baseUrl}}/research",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"vaccines-research"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/patients-research",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/patients-research",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"patients-research"
+								"research"
 							]
 						}
 					},
@@ -2823,7 +2819,7 @@
 					"response": []
 				},
 				{
-					"name": "/vaccines-research",
+					"name": "/research",
 					"event": [
 						{
 							"listen": "test",
@@ -2841,12 +2837,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/vaccines-research",
+							"raw": "{{baseUrl}}/research",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"vaccines-research"
+								"research"
 							]
 						}
 					},
@@ -2877,36 +2873,6 @@
 							],
 							"path": [
 								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/patients-research",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/patients-research",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"patients-research"
 							]
 						}
 					},
@@ -2943,7 +2909,7 @@
 		},
 		{
 			"key": "patientId",
-			"value": "patientId"
+			"value": ""
 		},
 		{
 			"key": "doctor_username",
