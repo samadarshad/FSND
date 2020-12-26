@@ -43,10 +43,7 @@ def deletePatient(id):
     if not patient:
         abort(404)
     try:
-        if not patient_user_management.getPatientUser(patient.user_id):
-            print("Note: patient doesnt exist in Auth0 database")
-        else:
-            patient_user_management.deletePatientUser(patient.user_id)
+        patient_user_management.deletePatientUser(patient.user_id)
         patient.delete()
         return jsonify({
         'success': True
