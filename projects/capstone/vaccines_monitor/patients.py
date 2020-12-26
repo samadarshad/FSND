@@ -76,3 +76,34 @@ def getAllPatient(jwt):
     total_number_of_patients = len(Patient.query.all())
 
     return jsonify({'patients': current_patients, 'total_number_of_patients': total_number_of_patients})
+
+@patient_api.route('/<id>', methods=['PATCH'])
+@requires_auth('patch:patient')
+def patchPatient(jwt, id):
+    patient = Patient.query.get(id)
+    if not patient:
+        abort(404)
+        
+    if 'patch:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
+        pass
+    else:
+        abort(403)
+
+    body = request.get_json()
+    name = body.get('name', None)
+    age = body.get('age', None)
+    had_covid = body.get('had_covid', None)
+
+    if name:
+        patient.name = name
+    if age:
+        patient.age = age
+    if had_covid:
+        patient.had_covid = had_covid
+
+    try:
+        patient.update()
+    except Exception:
+        abort(400)
+        
+    return jsonify(patient.format())
