@@ -36,9 +36,10 @@ def createPatient(jwt):
         'patientId': new_patient.id
     })
 
-# @requires_auth('delete:patient')
+
 @patient_api.route('/<id>', methods=['DELETE'])
-def deletePatient(id):
+@requires_auth('delete:patient')
+def deletePatient(jwt, id):
     patient = Patient.query.get(id)
     if not patient:
         abort(404)
