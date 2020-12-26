@@ -51,3 +51,28 @@ def deletePatient(jwt, id):
         })
     except Exception:
         abort(422)
+
+@patient_api.route('/<id>', methods=['GET'])
+@requires_auth('read:patient')
+def getPatient(jwt, id):
+    patient = Patient.query.get(id)
+    if not patient:
+        abort(404)
+        
+    if 'read:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
+        pass
+    else:
+        abort(403)
+
+    return jsonify(patient.format())
+
+@patient_api.route('', methods=['GET'])
+@requires_auth('read:all_patients')
+def getAllPatient(jwt):
+    page = request.args.get('page', 1, type=int)
+    items_per_page = request.args.get('items_per_page', 10, type=int)
+    patients = Patient.query.order_by(Patient.id).paginate(page, items_per_page, error_out=False)
+    current_patients = [p.format() for p in patients.items]
+    total_number_of_patients = len(Patient.query.all())
+
+    return jsonify({'patients': current_patients, 'total_number_of_patients': total_number_of_patients})
