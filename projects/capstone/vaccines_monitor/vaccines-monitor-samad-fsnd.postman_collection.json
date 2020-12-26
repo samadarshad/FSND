@@ -381,7 +381,30 @@
 					"response": []
 				}
 			],
-			"description": "Public can only view vaccines"
+			"description": "Public can only view vaccines",
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "as admin: create patient A and patient B for testing",
@@ -755,8 +778,8 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
+											"pm.test(\"Status code is 403\", function () {\r",
+											"    pm.response.to.have.status(403);\r",
 											"});"
 										],
 										"type": "text/javascript"
@@ -988,13 +1011,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/patients/c",
+							"raw": "{{baseUrl}}/patients/{{patientA_id}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"patients",
-								"c"
+								"{{patientA_id}}"
 							]
 						}
 					},
@@ -1080,8 +1103,8 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"username = pm.collectionVariables.get('patientA_username')",
-							"password = pm.collectionVariables.get('patientA_password')",
+							"username = pm.environment.get('patientA_username')",
+							"password = pm.environment.get('patientA_password')",
 							"",
 							"var getToken = true;",
 							"",
@@ -2278,7 +2301,7 @@
 					"response": []
 				},
 				{
-					"name": "Create patient B",
+					"name": "Delete patient B",
 					"event": [
 						{
 							"listen": "test",
