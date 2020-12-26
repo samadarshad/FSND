@@ -1,10 +1,6 @@
 from auth0.v3.authentication import GetToken
 from auth0.v3.management import Auth0
-
-class Auth0Error(Exception):
-    def __init__(self, error, status_code):
-        self.error = error
-        self.status_code = status_code
+from auth0.v3.exceptions import Auth0Error
 
 class Auth0ManagementApiWrapper:
     def __init__(self, domain, non_interactive_client_secret, non_interactive_client_id):
@@ -27,6 +23,11 @@ class Auth0ManagementApiWrapper:
 
     def deleteUser(self, user_id):
         self.auth0.users.delete(user_id)
+        # confirm user has been deleted
+        if not self.getUser(user_id):
+            return True
+        else:
+            return False
 
     def assignRoleToUser(self, user_id, role_id):
         self.auth0.users.add_roles(user_id, [role_id])
@@ -34,8 +35,20 @@ class Auth0ManagementApiWrapper:
         ret = self.auth0.users.list_roles(user_id)
         if ret['roles'][0]['id'] == role_id:
             print("success")
+            return True
         else:
             print("failed to add!")
+            return False
 
     def getUser(self, user_id):
-        self.auth0.users.get(user_id)
+        try:            
+            ret = self.auth0.users.get(user_id, ['email'])
+            return ret
+        except Auth0Error as e:
+            if e.status_code == 404:
+                print("user doesnt exist")
+                return None
+            else:
+                print("other error")
+                raise(e)
+

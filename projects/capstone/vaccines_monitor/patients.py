@@ -27,11 +27,13 @@ def createPatient(jwt):
         new_patient.update()
         print(new_patient.format())
     except Exception:
+        print("Note: patient email may already exist in auth0 database")
         abort(500)        
     return jsonify({
         'success': True,
         'email': email,
-        'password': password
+        'password': password,
+        'patientId': new_patient.id
     })
 
 # @requires_auth('delete:patient')
