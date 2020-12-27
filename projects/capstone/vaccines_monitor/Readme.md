@@ -21,6 +21,6 @@ Heroku is setup to automatically pull in changes from master https://github.com/
 
 # API Documentation & Testing
 https://documenter.getpostman.com/view/13819578/TVsxCSUo 
-If you want to run the tests, click "Run in Postman" in the top right corner.
+If you want to run the tests, click "Run in Postman" in the top right corner. The collection contains all the needed login credentials for Auth0, so it will automatically obtain a new JWT token. In production, these login credentials shall be kept secret.
 Note you will need to change the collection-variable `baseUrl` to be localhost:8080 if testing locally.
 
