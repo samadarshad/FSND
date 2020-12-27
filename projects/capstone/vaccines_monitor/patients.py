@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, abort, jsonify
-from models import Patient
+from models import Patient, Test
 from auth import requires_auth
 import patient_user_management
 import os
@@ -45,7 +45,9 @@ def deletePatient(jwt, id):
         abort(404)
     try:
         patient_user_management.deletePatientUser(patient.user_id)
+        print("l48")
         patient.delete()
+        print("l50")
         return jsonify({
         'success': True
         })
@@ -107,3 +109,25 @@ def patchPatient(jwt, id):
         abort(400)
         
     return jsonify(patient.format())
+
+@patient_api.route('/<id>', methods=['POST'])
+@requires_auth('post:patient')
+def postPatient(jwt, id):
+    patient = Patient.query.get(id)
+    if not patient:
+        abort(404)
+
+    body = request.get_json()
+    effective = body.get('effective', None)
+    vaccine_id = body.get('vaccine_id', None)
+    
+    if not vaccine_id:
+        abort(400)    
+    
+    new_test = Test(effective=effective, patient_id=id, vaccine_id=vaccine_id)
+    try:
+        new_test.insert()
+        print(new_test.format())
+    except Exception:
+        abort(500)        
+    return jsonify(new_test.format()) 

@@ -31,7 +31,7 @@ class Patient(db.Model):
   name = Column(String)
   age = Column(Integer)
   had_covid = Column(Boolean)
-  tests = db.relationship('Test', backref=__tablename__, lazy='dynamic')
+  tests = db.relationship('Test', backref=__tablename__, lazy='dynamic', cascade="all, delete", passive_deletes=True)
 
   def __init__(self, user_id, name, age, had_covid):
     self.user_id = user_id
@@ -70,6 +70,12 @@ class Vaccine(db.Model):
   def __init__(self, name):
     self.name = name
 
+  def format(self):
+    return {
+        'id': self.id,
+        'name': self.name
+    }
+
   def insert(self):
     db.session.add(self)
     db.session.commit()
@@ -87,13 +93,21 @@ class Test(db.Model):
 
   id = Column(Integer, primary_key=True)
   effective = Column(Boolean)
-  patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+  patient_id = Column(Integer, ForeignKey('patients.id', ondelete="CASCADE"), nullable=False)
   vaccine_id = Column(Integer, ForeignKey('vaccines.id'), nullable=False)
 
   def __init__(self, effective, patient_id, vaccine_id):
     self.effective = effective
     self.patient_id = patient_id
     self.vaccine_id = vaccine_id
+
+  def format(self):
+    return {
+        'id': self.id,
+        'effective': self.effective,
+        'patient_id': self.patient_id,
+        'vaccine_id': self.vaccine_id
+    }
 
   def insert(self):
     db.session.add(self)

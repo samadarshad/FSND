@@ -24,21 +24,13 @@ class Auth0ManagementApiWrapper:
     def deleteUser(self, user_id):
         self.auth0.users.delete(user_id)
         # confirm user has been deleted
-        if not self.getUser(user_id):
-            return True
-        else:
-            return False
+        assert(not self.getUser(user_id))
 
     def assignRoleToUser(self, user_id, role_id):
         self.auth0.users.add_roles(user_id, [role_id])
         # confirm the role has been added
         ret = self.auth0.users.list_roles(user_id)
-        if ret['roles'][0]['id'] == role_id:
-            print("success")
-            return True
-        else:
-            print("failed to add!")
-            return False
+        assert(ret['roles'][0]['id'] == role_id)
 
     def getUser(self, user_id):
         try:            
