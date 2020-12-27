@@ -928,7 +928,7 @@
 									"response": []
 								},
 								{
-									"name": "Read the patient",
+									"name": "Read the patient with no tests",
 									"event": [
 										{
 											"listen": "test",
