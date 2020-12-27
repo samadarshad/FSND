@@ -1063,7 +1063,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\r\n    \"effective\":true, \r\n    \"patient_id\":{{patientId_createdByDoctor}}, \r\n    \"vaccine_id\":{{vaccineA_id}}\r\n}"
+											"raw": "{\r\n    \"effective\":true,\r\n    \"vaccine_id\":{{vaccineA_id}}\r\n}"
 										},
 										"url": {
 											"raw": "{{baseUrl}}/patients/{{patientId_createdByDoctor}}",
@@ -1481,7 +1481,17 @@
 							],
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines",
 									"host": [
@@ -1511,22 +1521,9 @@
 									}
 								}
 							],
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "vaccinesId",
-											"value": "{{vaccinesId}}",
-											"type": "text"
-										}
-									]
-								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
 									"host": [
@@ -1559,16 +1556,16 @@
 							],
 							"request": {
 								"method": "PATCH",
-								"header": [],
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
 								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "vaccinesId",
-											"value": "{{vaccinesId}}",
-											"type": "text"
-										}
-									]
+									"mode": "raw",
+									"raw": ""
 								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
@@ -1604,16 +1601,6 @@
 							"request": {
 								"method": "DELETE",
 								"header": [],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "vaccinesId",
-											"value": "{{vaccinesId}}",
-											"type": "text"
-										}
-									]
-								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
 									"host": [
@@ -1888,12 +1875,78 @@
 					"name": "Cant delete vaccine after it has been administered to patients",
 					"item": [
 						{
-							"name": "todo",
+							"name": "Add vaccines to the patient",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
-								"method": "GET",
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"effective\":true, \r\n    \"vaccine_id\":{{vaccineA_id}}\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientA_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant delete the vaccine",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 422\", function () {\r",
+											"    pm.response.to.have.status(422);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": ""
+									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"{{vaccineA_id}}"
+									]
 								}
 							},
 							"response": []
@@ -1906,147 +1959,157 @@
 			"name": "as admin: teardown",
 			"item": [
 				{
-					"name": "Delete patient A",
-					"event": [
+					"name": "Delete patients first",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-							"host": [
-								"{{baseUrl}}"
+							"name": "Delete patient A",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"path": [
-								"patients",
-								"{{patientA_id}}"
-							]
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientA_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete patient B",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// set patient username and password, pass this onto the patient\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientB_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientB_id}}"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Delete patient B",
-					"event": [
+					"name": "then can delete vaccines",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/patients/{{patientB_id}}",
-							"host": [
-								"{{baseUrl}}"
+							"name": "Delete vaccine A",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"path": [
-								"patients",
-								"{{patientB_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete vaccine A",
-					"event": [
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"{{vaccineA_id}}"
+									]
+								}
+							},
+							"response": []
+						},
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-							"host": [
-								"{{baseUrl}}"
+							"name": "Delete vaccine B",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"path": [
-								"vaccines",
-								"{{vaccineA_id}}"
-							]
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines/{{vaccineB_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"{{vaccineB_id}}"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete vaccine B",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines/{{vaccineB_id}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"vaccines",
-								"{{vaccineB_id}}"
-							]
-						}
-					},
-					"response": []
+					]
 				}
 			],
 			"event": [
