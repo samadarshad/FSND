@@ -38,9 +38,7 @@ class Auth0ManagementApiWrapper:
             return ret
         except Auth0Error as e:
             if e.status_code == 404:
-                print("user doesnt exist")
                 return None
             else:
-                print("other error")
                 raise(e)
 

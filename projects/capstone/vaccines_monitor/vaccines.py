@@ -9,9 +9,7 @@ vaccine_api = Blueprint('vaccine_api', __name__)
 @requires_auth('create:vaccine')
 def createVaccine(jwt):
     body = request.get_json()
-    name = body.get('name', None)
-    
-    
+    name = body.get('name', None)   
     new_vaccine = Vaccine(name=name)
     try:
         new_vaccine.insert()

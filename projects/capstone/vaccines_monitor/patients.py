@@ -125,7 +125,6 @@ def postPatient(jwt, id):
     new_test = Test(effective=effective, patient_id=id, vaccine_id=vaccine_id)
     try:
         new_test.insert()
-        print(new_test.formatShort())
     except Exception:
         abort(500)        
     return jsonify(new_test.formatShort()) 
