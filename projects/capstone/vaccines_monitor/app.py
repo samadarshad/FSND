@@ -22,15 +22,8 @@ CORS(app)
 
 
 @app.route('/')
-def get_greeting():
-    excited = os.getenv('EXCITED')
-    greeting = "Hello" 
-    if excited == 'true': greeting = greeting + "!! !!!"
-    return greeting
-
-@app.route('/coolkids')
-def be_cool():
-    return "Be cool, man, be coooool! You're almost a FSND grad!"
+def index():
+    return "Service is running."
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
