@@ -465,7 +465,7 @@
 					]
 				},
 				{
-					"name": "Can read vaccines",
+					"name": "Can read all vaccines",
 					"event": [
 						{
 							"listen": "test",
@@ -489,37 +489,6 @@
 							],
 							"path": [
 								"vaccines"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can read a vaccine",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"vaccines",
-								"{{vaccineA_id}}"
 							]
 						}
 					},
@@ -1178,36 +1147,6 @@
 					"name": "403 Forbidden",
 					"item": [
 						{
-							"name": "/research",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/research",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"research"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "/vaccines/{{vaccineA_id}}",
 							"event": [
 								{
@@ -1272,7 +1211,7 @@
 					]
 				},
 				{
-					"name": "/vaccines/{{vaccineA_id}}",
+					"name": "Can see all tests",
 					"event": [
 						{
 							"listen": "test",
@@ -1290,20 +1229,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
+							"raw": "{{baseUrl}}/tests",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"vaccines",
-								"{{vaccineA_id}}"
+								"tests"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "/patients",
+					"name": "Can see all patients",
 					"event": [
 						{
 							"listen": "test",
@@ -1338,36 +1276,6 @@
 									"key": "items_per_page",
 									"value": "10"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/vaccines",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"vaccines"
 							]
 						}
 					},
@@ -1468,7 +1376,7 @@
 											"pm.test(\"Status code is 200\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
 											"    var jsonData = JSON.parse(responseBody);\r",
-											"    postman.setEnvironmentVariable(\"vaccineId_createdByResearcher\", jsonData.vaccineId);\r",
+											"    postman.setEnvironmentVariable(\"vaccineId_createdByResearcher\", jsonData.id);\r",
 											"});\r",
 											"\r",
 											"\r",
@@ -1490,7 +1398,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": ""
+									"raw": "{\r\n    \"name\":\"vaccine_madeByResearcher_postmanTest\"\r\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines",
@@ -1565,7 +1473,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": ""
+									"raw": "{\r\n    \"name\":\"updated_vaccine_name_by_researcher\"\r\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
@@ -1824,49 +1732,95 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/research",
+							"raw": "{{baseUrl}}/tests",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"research"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "/vaccines",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"vaccines"
+								"tests"
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"description": "Researcher can do what public can do, full CRUD on vaccines, and only view research endpoints"
+			"description": "Researcher can do what public can do, full CRUD on vaccines, and only view research endpoints",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"username = pm.collectionVariables.get('researcher_username')",
+							"password = pm.collectionVariables.get('researcher_password')",
+							"",
+							"var getToken = true;",
+							"",
+							"if (!pm.environment.get('accessTokenExpiry') || ",
+							"    !pm.environment.get('currentAccessToken')) {",
+							"    console.log('Token or expiry date are missing')",
+							"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+							"    console.log('Token is expired')",
+							"} else {",
+							"    getToken = false;",
+							"    console.log('Token and expiry date are all good');",
+							"}",
+							"",
+							"if (pm.environment.get('username') != username) {",
+							"    getToken = true;",
+							"    console.log('Need to get new token for new username');",
+							"}",
+							"",
+							"if (getToken === true) {",
+							"",
+							"    pm.environment.set('username', username)",
+							"    pm.environment.set('password', password)",
+							"",
+							"    const echoPostRequest = {",
+							"    url: 'https://' + pm.collectionVariables.get('auth0_url') + '.auth0.com/oauth/token',",
+							"    method: 'POST',",
+							"    header: 'Content-Type:application/json',",
+							"    body: {",
+							"        mode: 'application/json',",
+							"        raw: JSON.stringify(",
+							"            {",
+							"                client_id: pm.collectionVariables.get('auth0_client_id'),",
+							"                client_secret: pm.collectionVariables.get('auth0_client_secret'),",
+							"                audience: pm.collectionVariables.get('auth0_audience'),",
+							"                grant_type:'password',",
+							"                username: pm.environment.get('username'),",
+							"                password: pm.environment.get('password')",
+							"            })",
+							"    }",
+							"    };",
+							"",
+							"",
+							"    pm.sendRequest(echoPostRequest, function (err, res) {",
+							"    console.log(err ? err : res.json());",
+							"        if (err === null) {",
+							"            console.log('Saving the token and expiry date')",
+							"            var responseJson = res.json();",
+							"            pm.environment.set('currentAccessToken', responseJson.access_token)",
+							"    ",
+							"            var expiryDate = new Date();",
+							"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+							"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+							"        }",
+							"    });",
+							"}"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "admin",
