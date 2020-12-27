@@ -45,7 +45,8 @@ class Patient(db.Model):
         'user_id': self.user_id,
         'name': self.name,
         'age': self.age,
-        'had_covid': self.had_covid
+        'had_covid': self.had_covid,
+        'tests': [t.formatShort() for t in self.tests]
     }
 
   def insert(self):
@@ -109,6 +110,13 @@ class Test(db.Model):
         'patient_age': self.patients.age,
         'patient_had_covid': self.patients.had_covid,
         'vaccine_id': self.vaccine_id,
+        'vaccine_name': self.vaccines.name
+    }
+
+  def formatShort(self):
+    return {
+        'id': self.id,
+        'effective': self.effective,
         'vaccine_name': self.vaccines.name
     }
 
