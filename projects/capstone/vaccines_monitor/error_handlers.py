@@ -4,11 +4,13 @@ from auth0_management_api_wrapper import Auth0Error
 
 blueprint = Blueprint('error_handlers', __name__)
 
+
 @blueprint.app_errorhandler(AuthError)
 def handle_auth_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
     return response
+
 
 @blueprint.app_errorhandler(Auth0Error)
 def handle_auth0_error(ex):
@@ -16,8 +18,9 @@ def handle_auth0_error(ex):
     response.status_code = ex.status_code
     return response
 
-##TODO make the error responses consistent with each other
-    
+# TODO make the error responses consistent with each other
+
+
 @blueprint.app_errorhandler(400)
 def bad_request(error):
     return jsonify({

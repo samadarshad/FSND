@@ -16,8 +16,9 @@ def createPatient(jwt):
     name = body.get('name', None)
     age = body.get('age', None)
     had_covid = body.get('had_covid', None)
-    
-    new_patient = Patient(user_id=None, name=name, age=age, had_covid=had_covid)
+
+    new_patient = Patient(user_id=None, name=name,
+                          age=age, had_covid=had_covid)
     try:
         new_patient.insert()
         email = formEmail(new_patient.id)
@@ -28,7 +29,7 @@ def createPatient(jwt):
         print(new_patient.format())
     except Exception:
         print("Note: patient email may already exist in auth0 database")
-        abort(500)        
+        abort(500)
     return jsonify({
         'success': True,
         'email': email,
@@ -47,10 +48,11 @@ def deletePatient(jwt, id):
         patient_user_management.deletePatientUser(patient.user_id)
         patient.delete()
         return jsonify({
-        'success': True
+            'success': True
         })
     except Exception:
         abort(422)
+
 
 @patient_api.route('/<id>', methods=['GET'])
 @requires_auth('read:patient')
@@ -58,7 +60,7 @@ def getPatient(jwt, id):
     patient = Patient.query.get(id)
     if not patient:
         abort(404)
-        
+
     if 'read:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
         pass
     else:
@@ -66,16 +68,19 @@ def getPatient(jwt, id):
 
     return jsonify(patient.format())
 
+
 @patient_api.route('', methods=['GET'])
 @requires_auth('read:all_patients')
 def getAllPatient(jwt):
     page = request.args.get('page', 1, type=int)
     items_per_page = request.args.get('items_per_page', 10, type=int)
-    patients = Patient.query.order_by(Patient.id).paginate(page, items_per_page, error_out=False)
+    patients = Patient.query.order_by(Patient.id).paginate(
+        page, items_per_page, error_out=False)
     current_patients = [p.format() for p in patients.items]
     total_number_of_patients = len(Patient.query.all())
 
     return jsonify({'patients': current_patients, 'total_number_of_patients': total_number_of_patients})
+
 
 @patient_api.route('/<id>', methods=['PATCH'])
 @requires_auth('patch:patient')
@@ -83,7 +88,7 @@ def patchPatient(jwt, id):
     patient = Patient.query.get(id)
     if not patient:
         abort(404)
-        
+
     if 'patch:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
         pass
     else:
@@ -105,8 +110,9 @@ def patchPatient(jwt, id):
         patient.update()
     except Exception:
         abort(400)
-        
+
     return jsonify(patient.format())
+
 
 @patient_api.route('/<id>', methods=['POST'])
 @requires_auth('post:patient')
@@ -118,13 +124,13 @@ def postPatient(jwt, id):
     body = request.get_json()
     effective = body.get('effective', None)
     vaccine_id = body.get('vaccine_id', None)
-    
+
     if not vaccine_id:
-        abort(400)    
-    
+        abort(400)
+
     new_test = Test(effective=effective, patient_id=id, vaccine_id=vaccine_id)
     try:
         new_test.insert()
     except Exception:
-        abort(500)        
-    return jsonify(new_test.formatShort()) 
+        abort(500)
+    return jsonify(new_test.formatShort())
