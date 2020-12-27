@@ -285,9 +285,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -315,9 +313,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -346,9 +342,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -377,9 +371,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -407,9 +399,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -438,9 +428,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 401\", function () {\r",
-											"    pm.response.to.have.status(401);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -461,6 +449,28 @@
 								}
 							},
 							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
 						}
 					]
 				},
@@ -1153,9 +1163,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1184,9 +1192,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1208,78 +1214,133 @@
 							},
 							"response": []
 						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
 					]
 				},
 				{
-					"name": "Can see all tests",
-					"event": [
+					"name": "200 Success",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/tests",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"tests"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can see all patients",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/patients?page=1&items_per_page=10",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"patients"
-							],
-							"query": [
+							"name": "Can see all patients",
+							"event": [
 								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "items_per_page",
-									"value": "10"
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients?page=1&items_per_page=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "items_per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Can see all tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/tests?page=1&items_per_page=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tests"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "items_per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					]
 				}
 			],
 			"description": "Doctor can do everything patients can do, post vaccines to patients records, delete patient, view all patient records, view all vaccines records",
@@ -1534,9 +1595,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1564,9 +1623,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1595,9 +1652,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1626,9 +1681,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1657,9 +1710,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1688,9 +1739,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -1710,6 +1759,28 @@
 								}
 							},
 							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
 						}
 					]
 				},
