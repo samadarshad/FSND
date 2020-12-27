@@ -23,31 +23,35 @@ def createVaccine(jwt):
 
 @vaccine_api.route('', methods=['GET'])
 def getVaccines():
-        
-    #TODO get vaccines
+    vaccines = Vaccine.query.order_by(Vaccine.id).all()
+    vaccines_formatted = [v.format() for v in vaccines]
 
-    return jsonify({
-        'success': True
-        })
+    return jsonify(vaccines_formatted)
 
 @vaccine_api.route('/<id>', methods=['GET'])
 def getVaccine(id):
-        
-    #TODO get vaccines
+    vaccine = Vaccine.query.get(id)
+    if not vaccine:
+        abort(404)
 
-    return jsonify({
-        'success': True
-        })
+    return jsonify(vaccine.format())
 
 @vaccine_api.route('/<id>', methods=['PATCH'])
 @requires_auth('patch:vaccine')
 def patchVaccine(jwt, id):
-        
-    #TODO 
+    vaccine = Vaccine.query.get(id)
+    if not vaccine:
+        abort(404)
 
-    return jsonify({
-        'success': True
-        })
+    body = request.get_json()
+    name = body.get('name', None)
+    if name:
+        vaccine.name = name
+    try:
+        vaccine.update()
+    except Exception:
+        abort(400)        
+    return jsonify(vaccine.format())
 
 @vaccine_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:vaccine')

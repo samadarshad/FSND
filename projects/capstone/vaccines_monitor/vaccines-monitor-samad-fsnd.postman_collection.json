@@ -761,6 +761,10 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    pm.expect(jsonData.name).to.eq('updated_name');\r",
+									"    pm.expect(jsonData.age).to.eq(30);\r",
+									"    pm.expect(jsonData.had_covid).to.eq(true);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1676,6 +1680,8 @@
 										"exec": [
 											"pm.test(\"Status code is 200\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    pm.expect(jsonData.name).to.eq('updated_vaccine_name_by_researcher')\r",
 											"});\r",
 											"\r",
 											""
