@@ -108,7 +108,8 @@ class Test(db.Model):
         'patient_id': self.patient_id,
         'patient_age': self.patients.age,
         'patient_had_covid': self.patients.had_covid,
-        'vaccine_id': self.vaccine_id
+        'vaccine_id': self.vaccine_id,
+        'vaccine_name': self.vaccines.name
     }
 
   def insert(self):
