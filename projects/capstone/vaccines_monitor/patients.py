@@ -45,9 +45,7 @@ def deletePatient(jwt, id):
         abort(404)
     try:
         patient_user_management.deletePatientUser(patient.user_id)
-        print("l48")
         patient.delete()
-        print("l50")
         return jsonify({
         'success': True
         })

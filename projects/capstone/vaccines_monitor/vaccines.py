@@ -52,9 +52,13 @@ def patchVaccine(jwt, id):
 @vaccine_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:vaccine')
 def deleteVaccine(jwt, id):
-        
-    #TODO 
-
-    return jsonify({
+    vaccine = Vaccine.query.get(id)
+    if not vaccine:
+        abort(404)
+    try:
+        vaccine.delete()
+        return jsonify({
         'success': True
         })
+    except Exception:
+        abort(422)
