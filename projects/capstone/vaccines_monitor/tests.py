@@ -15,5 +15,5 @@ def getTests(jwt):
     current_tests = [t.format() for t in tests.items]
     total_number = len(Test.query.all())
 
-    return jsonify({'tests': current_tests, 'total_number': total_number})       
-
+    return jsonify({'tests': current_tests, 'total_number': total_number})
+    
