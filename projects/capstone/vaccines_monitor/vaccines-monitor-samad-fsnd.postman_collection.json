@@ -1023,6 +1023,8 @@
 												"exec": [
 													"pm.test(\"Status code is 200\", function () {\r",
 													"    pm.response.to.have.status(200);\r",
+													"    var jsonData = JSON.parse(responseBody);\r",
+													"    postman.setEnvironmentVariable(\"testA_createdByDoctor\", jsonData.id);\r",
 													"});\r",
 													"\r",
 													""
@@ -1066,6 +1068,8 @@
 												"exec": [
 													"pm.test(\"Status code is 200\", function () {\r",
 													"    pm.response.to.have.status(200);\r",
+													"    var jsonData = JSON.parse(responseBody);\r",
+													"    postman.setEnvironmentVariable(\"testB_createdByDoctor\", jsonData.id);\r",
 													"});\r",
 													"\r",
 													""
@@ -1215,6 +1219,72 @@
 											"path": [
 												"patients",
 												"{{patientId_createdByDoctor}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Test A is also automatically deleted",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/tests/{{testA_createdByDoctor}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tests",
+												"{{testA_createdByDoctor}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Test B is also automatically deleted",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 404\", function () {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/tests/{{testB_createdByDoctor}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tests",
+												"{{testB_createdByDoctor}}"
 											]
 										}
 									},

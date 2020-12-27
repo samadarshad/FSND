@@ -16,4 +16,13 @@ def getTests(jwt):
     total_number = len(Test.query.all())
 
     return jsonify({'tests': current_tests, 'total_number': total_number})
+
+@test_api.route('/<id>', methods=['GET'])
+@requires_auth('read:all_tests')
+def getTest(jwt, id):    
+    test = Test.query.get(id)
+    if not test:
+        abort(404)
+
+    return jsonify(test.format())
     
