@@ -12,13 +12,8 @@ patient_api = Blueprint('patient_api', __name__)
 @patient_api.route('', methods=['POST'])
 @requires_auth('create:patient')
 def createPatient(jwt):
-    body = request.get_json()
-    name = body.get('name', None)
-    age = body.get('age', None)
-    had_covid = body.get('had_covid', None)
-
-    new_patient = Patient(user_id=None, name=name,
-                          age=age, had_covid=had_covid)
+    new_patient = Patient()
+    new_patient = populateObjectFromJson(new_patient, request.get_json())
     try:
         new_patient.insert()
         email = formEmail(new_patient.id)
@@ -43,12 +38,12 @@ def deletePatient(jwt, id):
     patient = getInstanceOrAbort(Patient, id)
     try:
         patient_user_management.deletePatientUser(patient.user_id)
-        patient.delete()
-        return jsonify({
-            'success': True
-        })
     except Exception:
-        abort(422)
+        abort(500)
+    deleteInstanceOrAbort(Patient, id)
+    return jsonify(success=True)
+
+    
 
 
 @patient_api.route('/<id>', methods=['GET'])
@@ -86,19 +81,8 @@ def patchPatient(jwt, id):
         pass
     else:
         abort(403)
-
-    body = request.get_json()
-    name = body.get('name', None)
-    age = body.get('age', None)
-    had_covid = body.get('had_covid', None)
-
-    if name:
-        patient.name = name
-    if age:
-        patient.age = age
-    if had_covid:
-        patient.had_covid = had_covid
-
+   
+    patient = populateObjectFromJson(patient, request.get_json())
     try:
         patient.update()
     except Exception:
@@ -111,17 +95,11 @@ def patchPatient(jwt, id):
 @requires_auth('post:patient')
 def postPatient(jwt, id):
     getInstanceOrAbort(Patient, id)
-
-    body = request.get_json()
-    effective = body.get('effective', None)
-    vaccine_id = body.get('vaccine_id', None)
-
-    if not vaccine_id:
-        abort(400)
-
-    new_test = Test(effective=effective, patient_id=id, vaccine_id=vaccine_id)
+    new_test = Test()
+    new_test = populateObjectFromJson(new_test, request.get_json())
+    new_test.patient_id = id
     try:
         new_test.insert()
     except Exception:
-        abort(500)
+        abort(400)
     return jsonify(new_test.formatShort())

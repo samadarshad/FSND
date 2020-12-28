@@ -9,9 +9,8 @@ vaccine_api = Blueprint('vaccine_api', __name__)
 @vaccine_api.route('', methods=['POST'])
 @requires_auth('create:vaccine')
 def createVaccine(jwt):
-    body = request.get_json()
-    name = body.get('name', None)
-    new_vaccine = Vaccine(name=name)
+    new_vaccine = Vaccine()
+    new_vaccine = populateObjectFromJson(new_vaccine, request.get_json())
     try:
         new_vaccine.insert()
     except Exception:
@@ -37,11 +36,7 @@ def getVaccine(id):
 @requires_auth('patch:vaccine')
 def patchVaccine(jwt, id):
     vaccine = getInstanceOrAbort(Vaccine, id)
-
-    body = request.get_json()
-    name = body.get('name', None)
-    if name:
-        vaccine.name = name
+    vaccine = populateObjectFromJson(vaccine, request.get_json())
     try:
         vaccine.update()
     except Exception:
@@ -51,12 +46,6 @@ def patchVaccine(jwt, id):
 
 @vaccine_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:vaccine')
-def deleteVaccine(jwt, id):
-    vaccine = getInstanceOrAbort(Vaccine, id)
-    try:
-        vaccine.delete()
-        return jsonify({
-            'success': True
-        })
-    except Exception:
-        abort(422)
+def deleteVaccine(jwt, id):    
+    deleteInstanceOrAbort(Vaccine, id)
+    return jsonify(success=True)
