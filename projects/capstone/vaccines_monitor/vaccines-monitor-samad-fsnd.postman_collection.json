@@ -264,222 +264,6 @@
 			]
 		},
 		{
-			"name": "public",
-			"item": [
-				{
-					"name": "401 Unauthenticated",
-					"item": [
-						{
-							"name": "Cant read tests",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tests",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tests"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant read patients",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant read a patient",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients",
-										"{{patientA_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant update a vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PATCH",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/1",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"1"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
-									"});"
-								]
-							}
-						}
-					]
-				},
-				{
-					"name": "200 Success",
-					"item": [
-						{
-							"name": "Can read all vaccines",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});"
-								]
-							}
-						}
-					]
-				}
-			],
-			"description": "Public can only view vaccines",
-			"auth": {
-				"type": "noauth"
-			},
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			]
-		},
-		{
 			"name": "patientA",
 			"item": [
 				{
@@ -1385,6 +1169,66 @@
 										}
 									},
 									"response": []
+								},
+								{
+									"name": "Can read Test A",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/tests/{{testA_createdByDoctor}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tests",
+												"{{testA_createdByDoctor}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Can read Test B",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/tests/{{testB_createdByDoctor}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tests",
+												"{{testB_createdByDoctor}}"
+											]
+										}
+									},
+									"response": []
 								}
 							],
 							"event": [
@@ -1636,6 +1480,250 @@
 							"        }",
 							"    });",
 							"}"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "public",
+			"item": [
+				{
+					"name": "401 Unauthenticated",
+					"item": [
+						{
+							"name": "Cant read tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/tests",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tests"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant read patients",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant read a patient",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientA_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant update a vaccine",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant read a test",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/tests",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tests"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "200 Success",
+					"item": [
+						{
+							"name": "Can read all vaccines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			],
+			"description": "Public can only view vaccines",
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
 						]
 					}
 				},
