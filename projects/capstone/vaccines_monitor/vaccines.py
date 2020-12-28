@@ -14,7 +14,7 @@ def createVaccine(jwt):
     try:
         new_vaccine.insert()
     except Exception:
-        abort(500)
+        abort(400)
     return jsonify(new_vaccine.format())
 
 
@@ -22,7 +22,6 @@ def createVaccine(jwt):
 def getVaccines():
     vaccines = Vaccine.query.order_by(Vaccine.id).all()
     vaccines_formatted = [v.format() for v in vaccines]
-
     return jsonify(vaccines_formatted)
 
 

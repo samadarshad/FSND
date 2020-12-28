@@ -44,8 +44,6 @@ def deletePatient(jwt, id):
     return jsonify(success=True)
 
     
-
-
 @patient_api.route('/<id>', methods=['GET'])
 @requires_auth('read:patient')
 def getPatient(jwt, id):
@@ -64,12 +62,7 @@ def getPatient(jwt, id):
 def getAllPatient(jwt):
     page = request.args.get('page', 1, type=int)
     items_per_page = request.args.get('items_per_page', 10, type=int)
-    patients = Patient.query.order_by(Patient.id).paginate(
-        page, items_per_page, error_out=False)
-    current_patients = [p.format() for p in patients.items]
-    total_number_of_patients = len(Patient.query.all())
-
-    return jsonify({'patients': current_patients, 'total_number_of_patients': total_number_of_patients})
+    return jsonify(getPaginatedTable(Patient, page, items_per_page))
 
 
 @patient_api.route('/<id>', methods=['PATCH'])
