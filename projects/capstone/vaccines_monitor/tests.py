@@ -22,8 +22,5 @@ def getTests(jwt):
 @test_api.route('/<id>', methods=['GET'])
 @requires_auth('read:all_tests')
 def getTest(jwt, id):
-    test = Test.query.get(id)
-    if not test:
-        abort(404)
-
+    test = getInstanceOrAbort(Test, id)
     return jsonify(test.format())

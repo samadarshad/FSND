@@ -14,7 +14,6 @@ def createVaccine(jwt):
     new_vaccine = Vaccine(name=name)
     try:
         new_vaccine.insert()
-        print(new_vaccine.format())
     except Exception:
         abort(500)
     return jsonify(new_vaccine.format())
@@ -30,19 +29,14 @@ def getVaccines():
 
 @vaccine_api.route('/<id>', methods=['GET'])
 def getVaccine(id):
-    vaccine = Vaccine.query.get(id)
-    if not vaccine:
-        abort(404)
-
+    vaccine = getInstanceOrAbort(Vaccine, id)
     return jsonify(vaccine.format())
 
 
 @vaccine_api.route('/<id>', methods=['PATCH'])
 @requires_auth('patch:vaccine')
 def patchVaccine(jwt, id):
-    vaccine = Vaccine.query.get(id)
-    if not vaccine:
-        abort(404)
+    vaccine = getInstanceOrAbort(Vaccine, id)
 
     body = request.get_json()
     name = body.get('name', None)
@@ -58,9 +52,7 @@ def patchVaccine(jwt, id):
 @vaccine_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:vaccine')
 def deleteVaccine(jwt, id):
-    vaccine = Vaccine.query.get(id)
-    if not vaccine:
-        abort(404)
+    vaccine = getInstanceOrAbort(Vaccine, id)
     try:
         vaccine.delete()
         return jsonify({

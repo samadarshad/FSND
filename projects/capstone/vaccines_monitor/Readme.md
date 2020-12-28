@@ -36,3 +36,4 @@ Note you will need to change the collection-variable `baseUrl` to be localhost:8
 - Usernames and passwords are currently stored in the Postman test collections suite to make testing easier (i.e. no need to manually generate a new JWT, the test suite automatically logs in and gets the JWT). There should be another secure way to automatically get JWTs. Alternatively, there could be separate Auth0 connection databases for development and production.
 - All new Patients are created with a default password, transferred in a JSON body from this app to Auth0. This should be changed such that this app never has to deal with passwords.
 - The Doctor has permissions to delete any Patient. However it would be better to restrict such that one doctor cannot delete the patients of another doctor.
+- There is no CI/Automated testing. This should be a step in the CD for Heroku.

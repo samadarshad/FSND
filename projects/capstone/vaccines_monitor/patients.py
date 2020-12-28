@@ -26,7 +26,6 @@ def createPatient(jwt):
         user_id = patient_user_management.createPatientUser(email, password)
         new_patient.user_id = user_id
         new_patient.update()
-        print(new_patient.format())
     except Exception:
         print("Note: patient email may already exist in auth0 database")
         abort(500)
@@ -41,9 +40,7 @@ def createPatient(jwt):
 @patient_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:patient')
 def deletePatient(jwt, id):
-    patient = Patient.query.get(id)
-    if not patient:
-        abort(404)
+    patient = getInstanceOrAbort(Patient, id)
     try:
         patient_user_management.deletePatientUser(patient.user_id)
         patient.delete()
@@ -57,9 +54,7 @@ def deletePatient(jwt, id):
 @patient_api.route('/<id>', methods=['GET'])
 @requires_auth('read:patient')
 def getPatient(jwt, id):
-    patient = Patient.query.get(id)
-    if not patient:
-        abort(404)
+    patient = getInstanceOrAbort(Patient, id)
 
     if 'read:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
         pass
@@ -85,9 +80,7 @@ def getAllPatient(jwt):
 @patient_api.route('/<id>', methods=['PATCH'])
 @requires_auth('patch:patient')
 def patchPatient(jwt, id):
-    patient = Patient.query.get(id)
-    if not patient:
-        abort(404)
+    patient = getInstanceOrAbort(Patient, id)
 
     if 'patch:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
         pass
@@ -117,9 +110,7 @@ def patchPatient(jwt, id):
 @patient_api.route('/<id>', methods=['POST'])
 @requires_auth('post:patient')
 def postPatient(jwt, id):
-    patient = Patient.query.get(id)
-    if not patient:
-        abort(404)
+    getInstanceOrAbort(Patient, id)
 
     body = request.get_json()
     effective = body.get('effective', None)
