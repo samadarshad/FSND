@@ -492,9 +492,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -522,9 +520,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -553,9 +549,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -584,9 +578,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -614,9 +606,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -644,9 +634,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -667,6 +655,67 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Cant edit other patient's info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"updated_name\", \r\n    \"age\":30, \r\n    \"had_covid\":true\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientB_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientB_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
 						}
 					]
 				},
