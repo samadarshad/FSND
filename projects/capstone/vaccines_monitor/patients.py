@@ -33,7 +33,6 @@ def createPatient(jwt):
         print("Note: patient email may already exist in auth0 database")
         abort(500)
     return jsonify({
-        'success': True,
         'email': email,
         'password': password,
         'patientId': new_patient.id

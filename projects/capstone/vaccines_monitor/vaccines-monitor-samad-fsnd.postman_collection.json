@@ -298,64 +298,6 @@
 							"response": []
 						},
 						{
-							"name": "Cant delete a vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineA_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant delete a patient",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients",
-										"{{patientA_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Cant read patients",
 							"event": [
 								{
@@ -910,6 +852,44 @@
 					"name": "403 Forbidden",
 					"item": [
 						{
+							"name": "Cant create a vaccine",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"vaccine_madeByDoctor_postmanTest\"\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/vaccines",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Cant update vaccines",
 							"event": [
 								{
@@ -1109,7 +1089,7 @@
 											"script": {
 												"exec": [
 													"var jsonData = JSON.parse(responseBody);\r",
-													"postman.setEnvironmentVariable(\"dasdasda\", jsonData.patientId);"
+													"postman.setEnvironmentVariable(\"patientId_createdByDoctor\", jsonData.patientId);"
 												],
 												"type": "text/javascript"
 											}
