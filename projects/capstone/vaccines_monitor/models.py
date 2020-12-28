@@ -1,7 +1,6 @@
 import os
-from sqlalchemy import Column, String, create_engine, Integer, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
-import json
 import config
 from flask_migrate import Migrate
 
@@ -37,7 +36,7 @@ class Patient(db.Model):
     tests = db.relationship('Test', backref=__tablename__,
                             lazy='dynamic', cascade="all, delete", passive_deletes=True)
 
-    def __init__(self, user_id, name, age, had_covid):
+    def __init__(self, user_id=None, name=None, age=None, had_covid=None):
         self.user_id = user_id
         self.name = name
         self.age = age
@@ -73,7 +72,7 @@ class Vaccine(db.Model):
     name = Column(String)
     tests = db.relationship('Test', backref=__tablename__, lazy='dynamic')
 
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
 
     def format(self):
@@ -103,7 +102,7 @@ class Test(db.Model):
         'patients.id', ondelete="CASCADE"), nullable=False)
     vaccine_id = Column(Integer, ForeignKey('vaccines.id'), nullable=False)
 
-    def __init__(self, effective, patient_id, vaccine_id):
+    def __init__(self, patient_id=None, vaccine_id=None, effective=None):
         self.effective = effective
         self.patient_id = patient_id
         self.vaccine_id = vaccine_id

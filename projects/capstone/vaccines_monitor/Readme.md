@@ -21,6 +21,19 @@ Heroku is setup to automatically pull in changes from master https://github.com/
 
 # API Documentation & Testing
 https://documenter.getpostman.com/view/13819578/TVsxCSUo 
-If you want to run the tests, click "Run in Postman" in the top right corner. The collection contains all the needed login credentials for Auth0, so it will automatically obtain a new JWT token. In production, these login credentials shall be kept secret.
+If you want to run the tests, click "Run in Postman" in the top right corner. The collection contains all the needed login credentials for Auth0, so it will automatically obtain a new JWT token.
 Note you will need to change the collection-variable `baseUrl` to be localhost:8080 if testing locally.
 
+# Error handlers
+{
+  [optional]code, 
+  description
+} HTTP status_code
+
+# Things needed to make this production-ready
+- Syncing of the Auth0 users database and the postgres database. i.e. the app will fail to create patientX if patientX already exists in Auth0 database. The current workaround is to manually clear both databases to start the index X=1.
+- Secrets are currently stored in the .env file. It should be stored as secret environment variables in Github.
+- Usernames and passwords are currently stored in the Postman test collections suite to make testing easier (i.e. no need to manually generate a new JWT, the test suite automatically logs in and gets the JWT). There should be another secure way to automatically get JWTs. Alternatively, there could be separate Auth0 connection databases for development and production.
+- All new Patients are created with a default password, transferred in a JSON body from this app to Auth0. This should be changed such that this app never has to deal with passwords.
+- The Doctor has permissions to delete any Patient. However it would be better to restrict such that one doctor cannot delete the patients of another doctor.
+- There is no CI/Automated testing. This should be a step in the CD for Heroku.

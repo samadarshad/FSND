@@ -1,12 +1,9 @@
-import os
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS
 from flask_moment import Moment
 
 from models import setup_db
 import error_handlers
-from auth import requires_auth
-import config
 from patients import patient_api
 from vaccines import vaccine_api
 from tests import test_api

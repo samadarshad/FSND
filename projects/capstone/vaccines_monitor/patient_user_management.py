@@ -19,9 +19,9 @@ def createPatientUser(email, password):
     return user_id
 
 
-def deletePatientUser(user_id):
-    return auth0.deleteUser(user_id)
-
-
 def getPatientUser(user_id):
     return auth0.getUser(user_id)
+
+
+def deletePatientUser(user_id):
+    return auth0.deleteUser(user_id)

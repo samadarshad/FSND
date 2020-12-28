@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "4f128fa0-93dc-4a28-a2c8-b0d5cf7fa8f6",
 		"name": "vaccines-monitor-samad-fsnd",
+		"description": "This is the API Documentation and Tests for the Vaccines Monitor application, created for the Udacity Full-Stack course.\r\n\r\nNote, the ordering of the documentation below is based on the ordering of the chaining of tests (i.e. create -> update ->  check -> delete).\r\n\r\nThe live application is hosted at: \r\nhttps://vaccines-monitor-samad-fsnd.herokuapp.com/\r\nCheck that this home webpage returns \"Service is running.\" before doing any curl requests.\r\n\r\nNote: all username and passwords are stored in this collection's variables, so when running the test, it will automatically fetch JWTs and apply them in the curl commands as token headers. If you need to manually see the token for a particular user, go to one of the tests of that user folder (eg 'doctor'), run the first test in that folder, then open the environment variables and see `currentAccessToken`.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -22,9 +23,6 @@
 									"    postman.setEnvironmentVariable(\"patientA_username\", jsonData.email);\r",
 									"    postman.setEnvironmentVariable(\"patientA_password\", jsonData.password);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -68,9 +66,6 @@
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    postman.setEnvironmentVariable(\"patientB_id\", jsonData.patientId);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -115,8 +110,6 @@
 									"    postman.setEnvironmentVariable(\"vaccineA_id\", jsonData.id);\r",
 									"});\r",
 									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -160,9 +153,6 @@
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    postman.setEnvironmentVariable(\"vaccineB_id\", jsonData.id);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -195,6 +185,7 @@
 					"response": []
 				}
 			],
+			"description": "Creating the required database items for testing",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -301,64 +292,6 @@
 									],
 									"path": [
 										"tests"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant delete a vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineA_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Cant delete a patient",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients",
-										"{{patientA_id}}"
 									]
 								}
 							},
@@ -475,34 +408,50 @@
 					]
 				},
 				{
-					"name": "Can read all vaccines",
+					"name": "200 Success",
+					"item": [
+						{
+							"name": "Can read all vaccines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines"
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"type": "text/javascript",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});"
-								],
-								"type": "text/javascript"
+								]
 							}
 						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/vaccines",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"vaccines"
-							]
-						}
-					},
-					"response": []
+					]
 				}
 			],
 			"description": "Public can only view vaccines",
@@ -543,9 +492,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -573,9 +520,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -604,9 +549,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -635,9 +578,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -665,9 +606,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -695,9 +634,7 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 403\", function () {\r",
-											"    pm.response.to.have.status(403);\r",
-											"});"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -718,87 +655,168 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Cant edit other patient's info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"updated_name\", \r\n    \"age\":30, \r\n    \"had_covid\":true\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientB_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientB_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
 						}
 					]
 				},
 				{
-					"name": "Can read own information",
-					"event": [
+					"name": "200 Success",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-							"host": [
-								"{{baseUrl}}"
+							"name": "Can read own information",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Expected information is what Admin set\", function () {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    pm.expect(jsonData.name).to.eq('patientA_postmanTest');\r",
+											"    pm.expect(jsonData.age).to.eq(25);\r",
+											"    pm.expect(jsonData.had_covid).to.eq(false);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"path": [
-								"patients",
-								"{{patientA_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Can update own information",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"    var jsonData = JSON.parse(responseBody);\r",
-									"    pm.expect(jsonData.name).to.eq('updated_name');\r",
-									"    pm.expect(jsonData.age).to.eq(30);\r",
-									"    pm.expect(jsonData.had_covid).to.eq(true);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"updated_name\", \r\n    \"age\":30, \r\n    \"had_covid\":true\r\n}"
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientA_id}}"
+									]
+								}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{baseUrl}}/patients/{{patientA_id}}",
-							"host": [
-								"{{baseUrl}}"
+						{
+							"name": "Can update own information",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Expected information is what patient updated\", function () {\r",
+											"    var jsonData = JSON.parse(responseBody);\r",
+											"    pm.expect(jsonData.name).to.eq('updated_name');\r",
+											"    pm.expect(jsonData.age).to.eq(30);\r",
+											"    pm.expect(jsonData.had_covid).to.eq(true);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
 							],
-							"path": [
-								"patients",
-								"{{patientA_id}}"
-							]
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"updated_name\", \r\n    \"age\":30, \r\n    \"had_covid\":true\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/patients/{{patientA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients",
+										"{{patientA_id}}"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								]
+							}
+						}
+					]
 				}
 			],
-			"description": "Patient1 can do what public can do, and only view and update data for patient 1.",
+			"description": "PatientA can do what public can do, and only view and update data for patientA.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -880,6 +898,233 @@
 			"name": "doctor",
 			"item": [
 				{
+					"name": "403 Forbidden",
+					"item": [
+						{
+							"name": "Cant create a vaccine",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"vaccine_madeByDoctor_postmanTest\"\r\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/vaccines",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant update vaccines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"{{vaccineA_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cant delete vaccines",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"vaccines",
+										"{{vaccineA_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "200 Success",
+					"item": [
+						{
+							"name": "Can see all patients",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/patients?page=1&items_per_page=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"patients"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "items_per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Can see all tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/tests?page=1&items_per_page=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tests"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "items_per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					]
+				},
+				{
 					"name": "Manage a patient",
 					"item": [
 						{
@@ -892,15 +1137,8 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
-													"    var jsonData = JSON.parse(responseBody);\r",
-													"    postman.setEnvironmentVariable(\"patientId_createdByDoctor\", jsonData.patientId);\r",
-													"});\r",
-													"\r",
-													"// set patient username and password, pass this onto the patient\r",
-													"\r",
-													""
+													"var jsonData = JSON.parse(responseBody);\r",
+													"postman.setEnvironmentVariable(\"patientId_createdByDoctor\", jsonData.patientId);"
 												],
 												"type": "text/javascript"
 											}
@@ -938,8 +1176,7 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
+													"pm.test(\"No tests\", function () {\r",
 													"    var jsonData = JSON.parse(responseBody);\r",
 													"    pm.expect(jsonData.tests).to.be.empty;\r",
 													"});\r",
@@ -985,9 +1222,6 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
-													"});\r",
 													""
 												],
 												"type": "text/javascript"
@@ -1027,11 +1261,8 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
-													"    var jsonData = JSON.parse(responseBody);\r",
-													"    postman.setEnvironmentVariable(\"testA_createdByDoctor\", jsonData.id);\r",
-													"});\r",
+													"var jsonData = JSON.parse(responseBody);\r",
+													"postman.setEnvironmentVariable(\"testA_createdByDoctor\", jsonData.id);\r",
 													"\r",
 													""
 												],
@@ -1072,11 +1303,9 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
-													"    var jsonData = JSON.parse(responseBody);\r",
-													"    postman.setEnvironmentVariable(\"testB_createdByDoctor\", jsonData.id);\r",
-													"});\r",
+													"var jsonData = JSON.parse(responseBody);\r",
+													"postman.setEnvironmentVariable(\"testB_createdByDoctor\", jsonData.id);\r",
+													"\r",
 													"\r",
 													""
 												],
@@ -1117,8 +1346,7 @@
 											"listen": "test",
 											"script": {
 												"exec": [
-													"pm.test(\"Status code is 200\", function () {\r",
-													"    pm.response.to.have.status(200);\r",
+													"pm.test(\"Has tests\", function () {\r",
 													"    var jsonData = JSON.parse(responseBody);\r",
 													"    pm.expect(jsonData.tests).to.be.an('array')\r",
 													"});\r",
@@ -1157,6 +1385,29 @@
 										}
 									},
 									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										]
+									}
 								}
 							]
 						},
@@ -1319,198 +1570,9 @@
 							}
 						}
 					]
-				},
-				{
-					"name": "403 Forbidden",
-					"item": [
-						{
-							"name": "/vaccines/{{vaccineA_id}}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PATCH",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineA_id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "/vaccines/{{vaccineA_id}}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineA_id}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineA_id}}"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Status code is 403\", function () {",
-									"    pm.response.to.have.status(403);",
-									"});"
-								]
-							}
-						}
-					]
-				},
-				{
-					"name": "200 Success",
-					"item": [
-						{
-							"name": "Can see all patients",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/patients?page=1&items_per_page=10",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"patients"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "items_per_page",
-											"value": "10"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Can see all tests",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/tests?page=1&items_per_page=10",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"tests"
-									],
-									"query": [
-										{
-											"key": "page",
-											"value": "1"
-										},
-										{
-											"key": "items_per_page",
-											"value": "10"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									""
-								]
-							}
-						}
-					]
 				}
 			],
-			"description": "Doctor can do everything patients can do, post vaccines to patients records, delete patient, view all patient records, view all vaccines records",
+			"description": "Doctor can do everything patients can do, post vaccines to patients records, delete patients, view all patient records.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1591,169 +1653,6 @@
 		{
 			"name": "researcher",
 			"item": [
-				{
-					"name": "CRUD flow a vaccine",
-					"item": [
-						{
-							"name": "Create a vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"    var jsonData = JSON.parse(responseBody);\r",
-											"    postman.setEnvironmentVariable(\"vaccineId_createdByResearcher\", jsonData.id);\r",
-											"});\r",
-											"\r",
-											"\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\":\"vaccine_madeByResearcher_postmanTest\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseUrl}}/vaccines",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get the vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineId_createdByResearcher}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Update the vaccine",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"    var jsonData = JSON.parse(responseBody);\r",
-											"    pm.expect(jsonData.name).to.eq('updated_vaccine_name_by_researcher')\r",
-											"});\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\":\"updated_vaccine_name_by_researcher\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineId_createdByResearcher}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Delete the vaccine>",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"vaccines",
-										"{{vaccineId_createdByResearcher}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
 				{
 					"name": "403 Forbidden",
 					"item": [
@@ -1839,37 +1738,214 @@
 					]
 				},
 				{
-					"name": "Can read tests",
+					"name": "200 Success",
+					"item": [
+						{
+							"name": "CRUD flow a vaccine",
+							"item": [
+								{
+									"name": "Create a vaccine",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"postman.setEnvironmentVariable(\"vaccineId_createdByResearcher\", jsonData.id);\r",
+													"\r",
+													"\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\":\"vaccine_madeByResearcher_postmanTest\"\r\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/vaccines",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"vaccines"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get the vaccine",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"vaccines",
+												"{{vaccineId_createdByResearcher}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update the vaccine",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"var jsonData = JSON.parse(responseBody);\r",
+													"pm.expect(jsonData.name).to.eq('updated_vaccine_name_by_researcher')\r",
+													"\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\":\"updated_vaccine_name_by_researcher\"\r\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"vaccines",
+												"{{vaccineId_createdByResearcher}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete the vaccine",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/vaccines/{{vaccineId_createdByResearcher}}",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"vaccines",
+												"{{vaccineId_createdByResearcher}}"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Can see all tests",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/tests?page=1&items_per_page=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tests"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "items_per_page",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"type": "text/javascript",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
 							}
 						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/tests",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"tests"
-							]
-						}
-					},
-					"response": []
+					]
 				}
 			],
-			"description": "Researcher can do what public can do, full CRUD on vaccines, and only view research endpoints",
+			"description": "Researcher can do what public can do, fully manage vaccines, and only view tests with anonymous patient information (i.e. no names)",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2033,6 +2109,7 @@
 					]
 				}
 			],
+			"description": "Admin has all permissions",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2267,6 +2344,7 @@
 					]
 				}
 			],
+			"description": "Returning the database state to its original state.",
 			"event": [
 				{
 					"listen": "prerequest",
