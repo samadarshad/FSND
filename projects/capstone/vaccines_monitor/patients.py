@@ -9,6 +9,14 @@ from util import *
 patient_api = Blueprint('patient_api', __name__)
 
 
+@patient_api.route('', methods=['GET'])
+@requires_auth('read:all_patients')
+def getAllPatient(jwt):
+    page = request.args.get('page', 1, type=int)
+    items_per_page = request.args.get('items_per_page', 10, type=int)
+    return jsonify(getPaginatedTable(Patient, page, items_per_page))
+
+
 @patient_api.route('', methods=['POST'])
 @requires_auth('create:patient')
 def createPatient(jwt):
@@ -32,18 +40,6 @@ def createPatient(jwt):
     })
 
 
-@patient_api.route('/<id>', methods=['DELETE'])
-@requires_auth('delete:patient')
-def deletePatient(jwt, id):
-    patient = getInstanceOrAbort(Patient, id)
-    try:
-        patient_user_management.deletePatientUser(patient.user_id)
-    except Exception:
-        abort(500)
-    deleteInstanceOrAbort(Patient, id)
-    return jsonify(success=True)
-
-    
 @patient_api.route('/<id>', methods=['GET'])
 @requires_auth('read:patient')
 def getPatient(jwt, id):
@@ -53,33 +49,6 @@ def getPatient(jwt, id):
         pass
     else:
         abort(403)
-
-    return jsonify(patient.format())
-
-
-@patient_api.route('', methods=['GET'])
-@requires_auth('read:all_patients')
-def getAllPatient(jwt):
-    page = request.args.get('page', 1, type=int)
-    items_per_page = request.args.get('items_per_page', 10, type=int)
-    return jsonify(getPaginatedTable(Patient, page, items_per_page))
-
-
-@patient_api.route('/<id>', methods=['PATCH'])
-@requires_auth('patch:patient')
-def patchPatient(jwt, id):
-    patient = getInstanceOrAbort(Patient, id)
-
-    if 'patch:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
-        pass
-    else:
-        abort(403)
-   
-    patient = populateObjectFromJson(patient, request.get_json())
-    try:
-        patient.update()
-    except Exception:
-        abort(400)
 
     return jsonify(patient.format())
 
@@ -96,3 +65,34 @@ def postPatient(jwt, id):
     except Exception:
         abort(400)
     return jsonify(new_test.formatShort())
+
+
+@patient_api.route('/<id>', methods=['PATCH'])
+@requires_auth('patch:patient')
+def patchPatient(jwt, id):
+    patient = getInstanceOrAbort(Patient, id)
+
+    if 'patch:all_patients' in jwt['permissions'] or patient.user_id == jwt['sub']:
+        pass
+    else:
+        abort(403)
+
+    patient = populateObjectFromJson(patient, request.get_json())
+    try:
+        patient.update()
+    except Exception:
+        abort(400)
+
+    return jsonify(patient.format())
+
+
+@patient_api.route('/<id>', methods=['DELETE'])
+@requires_auth('delete:patient')
+def deletePatient(jwt, id):
+    patient = getInstanceOrAbort(Patient, id)
+    try:
+        patient_user_management.deletePatientUser(patient.user_id)
+    except Exception:
+        abort(500)
+    deleteInstanceOrAbort(Patient, id)
+    return jsonify(success=True)

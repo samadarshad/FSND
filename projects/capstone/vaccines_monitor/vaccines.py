@@ -6,18 +6,6 @@ from util import *
 vaccine_api = Blueprint('vaccine_api', __name__)
 
 
-@vaccine_api.route('', methods=['POST'])
-@requires_auth('create:vaccine')
-def createVaccine(jwt):
-    new_vaccine = Vaccine()
-    new_vaccine = populateObjectFromJson(new_vaccine, request.get_json())
-    try:
-        new_vaccine.insert()
-    except Exception:
-        abort(400)
-    return jsonify(new_vaccine.format())
-
-
 @vaccine_api.route('', methods=['GET'])
 def getVaccines():
     vaccines = Vaccine.query.order_by(Vaccine.id).all()
@@ -29,6 +17,18 @@ def getVaccines():
 def getVaccine(id):
     vaccine = getInstanceOrAbort(Vaccine, id)
     return jsonify(vaccine.format())
+
+
+@vaccine_api.route('', methods=['POST'])
+@requires_auth('create:vaccine')
+def createVaccine(jwt):
+    new_vaccine = Vaccine()
+    new_vaccine = populateObjectFromJson(new_vaccine, request.get_json())
+    try:
+        new_vaccine.insert()
+    except Exception:
+        abort(400)
+    return jsonify(new_vaccine.format())
 
 
 @vaccine_api.route('/<id>', methods=['PATCH'])
@@ -45,6 +45,6 @@ def patchVaccine(jwt, id):
 
 @vaccine_api.route('/<id>', methods=['DELETE'])
 @requires_auth('delete:vaccine')
-def deleteVaccine(jwt, id):    
+def deleteVaccine(jwt, id):
     deleteInstanceOrAbort(Vaccine, id)
     return jsonify(success=True)
