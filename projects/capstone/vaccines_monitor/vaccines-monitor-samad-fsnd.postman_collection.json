@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "4f128fa0-93dc-4a28-a2c8-b0d5cf7fa8f6",
 		"name": "vaccines-monitor-samad-fsnd",
+		"description": "This is the API Documentation and Tests for the Vaccines Monitor application, created for the Udacity Full-Stack course.\r\n\r\nNote, the ordering of the documentation below is based on the ordering of the chaining of tests (i.e. create -> update ->  check -> delete).\r\n\r\nThe live application is hosted at: \r\nhttps://vaccines-monitor-samad-fsnd.herokuapp.com/\r\nCheck that this home webpage returns \"Service is running.\" before doing any curl requests.\r\n\r\nNote: all username and passwords are stored in this collection's variables, so when running the test, it will automatically fetch JWTs and apply them in the curl commands as token headers. If you need to manually see the token for a particular user, go to one of the tests of that user folder (eg 'doctor'), run the first test in that folder, then open the environment variables and see `currentAccessToken`.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -22,9 +23,6 @@
 									"    postman.setEnvironmentVariable(\"patientA_username\", jsonData.email);\r",
 									"    postman.setEnvironmentVariable(\"patientA_password\", jsonData.password);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -68,9 +66,6 @@
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    postman.setEnvironmentVariable(\"patientB_id\", jsonData.patientId);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -115,8 +110,6 @@
 									"    postman.setEnvironmentVariable(\"vaccineA_id\", jsonData.id);\r",
 									"});\r",
 									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -160,9 +153,6 @@
 									"    var jsonData = JSON.parse(responseBody);\r",
 									"    postman.setEnvironmentVariable(\"vaccineB_id\", jsonData.id);\r",
 									"});\r",
-									"\r",
-									"// set patient username and password, pass this onto the patient\r",
-									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -195,6 +185,7 @@
 					"response": []
 				}
 			],
+			"description": "Creating the required database items for testing",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -730,6 +721,10 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = JSON.parse(responseBody);\r",
+									"    pm.expect(jsonData.name).to.eq('patientA_postmanTest');\r",
+									"    pm.expect(jsonData.age).to.eq(25);\r",
+									"    pm.expect(jsonData.had_covid).to.eq(false);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -798,7 +793,7 @@
 					"response": []
 				}
 			],
-			"description": "Patient1 can do what public can do, and only view and update data for patient 1.",
+			"description": "PatientA can do what public can do, and only view and update data for patientA.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1324,7 +1319,7 @@
 					"name": "403 Forbidden",
 					"item": [
 						{
-							"name": "/vaccines/{{vaccineA_id}}",
+							"name": "Cant update vaccines",
 							"event": [
 								{
 									"listen": "test",
@@ -1353,7 +1348,7 @@
 							"response": []
 						},
 						{
-							"name": "/vaccines/{{vaccineA_id}}",
+							"name": "Cant delete vaccines",
 							"event": [
 								{
 									"listen": "test",
@@ -1510,7 +1505,7 @@
 					]
 				}
 			],
-			"description": "Doctor can do everything patients can do, post vaccines to patients records, delete patient, view all patient records, view all vaccines records",
+			"description": "Doctor can do everything patients can do, post vaccines to patients records, delete patients, view all patient records.",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1719,7 +1714,7 @@
 							"response": []
 						},
 						{
-							"name": "Delete the vaccine>",
+							"name": "Delete the vaccine",
 							"event": [
 								{
 									"listen": "test",
@@ -1839,15 +1834,13 @@
 					]
 				},
 				{
-					"name": "Can read tests",
+					"name": "Can see all tests",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -1857,19 +1850,29 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/tests",
+							"raw": "{{baseUrl}}/tests?page=1&items_per_page=10",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"tests"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "items_per_page",
+									"value": "10"
+								}
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"description": "Researcher can do what public can do, full CRUD on vaccines, and only view research endpoints",
+			"description": "Researcher can do what public can do, fully manage vaccines, and only view tests with anonymous patient information (i.e. no names)",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2033,6 +2036,7 @@
 					]
 				}
 			],
+			"description": "Admin has all permissions",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -2267,6 +2271,7 @@
 					]
 				}
 			],
+			"description": "Returning the database state to its original state.",
 			"event": [
 				{
 					"listen": "prerequest",
