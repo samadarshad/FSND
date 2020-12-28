@@ -1,7 +1,6 @@
 import os
-from sqlalchemy import Column, String, create_engine, Integer, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, ForeignKey
 from flask_sqlalchemy import SQLAlchemy
-import json
 import config
 from flask_migrate import Migrate
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort, jsonify
+from flask import Blueprint, request, abort, jsonify
 from models import Vaccine
 from auth import requires_auth
 from util import *

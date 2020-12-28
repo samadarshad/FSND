@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort, jsonify
+from flask import Blueprint, request, abort, jsonify
 from models import Patient, Test
 from auth import requires_auth
 import patient_user_management
